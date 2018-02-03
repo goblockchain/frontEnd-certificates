@@ -1,0 +1,309 @@
+<template name="home">
+
+  <div id="printCertificateForm" class="container print-certificate" style="display: none;">
+
+    <h1>Novos certificados</h1><br>
+
+    <form class="form-horizontal">
+
+      <div class="form-group">
+        <label for="csvFileInput" class="col-sm-2 control-label">Alunos (csv)</label>
+        <div class="col-sm-10">
+          <input type="file" class="form-control" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="course" class="col-sm-2 control-label">Curso</label>
+        <div class="col-sm-10">
+          <select class="form-control" id="course" name="course">
+            <option value=1>Design Thinking Specialisation</option>
+            <option value=2>Specialisation in Facilitation Design</option>
+            <option value=3>Design Thinking Experience</option>
+            <option value=4>Business Design Experience</option>
+            <option value=5>Social Innovation Experience</option>
+            <option value=6>Facilitation Experience</option>
+            <option value=7>Service Design Experience</option>
+            <option value=8>Ahaze! Presença em Apresentações</option>
+            <option value=9>Mobilize! Estratégias para Transformação</option>
+            <option value=10>Visual Thinking</option>
+            <option value=11>Growth Hacking</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="hours" class="col-sm-2 control-label">Carga horária</label>
+        <div class="col-sm-10">
+          <input id="hours" class="form-control" name="hours" type="number">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="dates" class="col-sm-2 control-label">Datas</label>
+        <div class="col-sm-10">
+          <input id="dates" type="text" class="form-control">
+        </div>
+      </div>
+
+    </form>
+
+    <button id="button" class="btn btn-success pull-right">Criar</button>
+
+  </div>
+
+  <div class="container list-certificates">
+    <h1>Certificados</h1><br>
+    <div id="events">
+      <table id="certificates" class="table table-hover">
+        <thead>
+          <tr>
+            <th>
+              Bloco
+            </th>
+            <th>
+              Smart Contract
+            </th>
+            <th>
+              Nome
+            </th>
+            <th>
+              Curso
+            </th>
+            <th>
+              Data
+            </th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+        </tbody>
+      </table>
+
+    </div>
+
+  </div> <br><br>
+
+  <!-- Twitter abi-decoder -->
+<!--  <script src="./compatibility/abi-decoder.js"></script>-->
+
+  <script>
+    // email stuff
+    var clientId = '200877815660-bt784fja6aefn0mmmm1hcej7jsidld1b.apps.googleusercontent.com';
+    var apiKey = '53qtvr1c61ILLTdr4XOmhNQ_';
+    var scopes = 'https://www.googleapis.com/auth/gmail.send'; // 'https://mail.google.com/'; 
+    var accessToken;
+
+    function handleClientLoad() {
+      gapi.client.setApiKey(apiKey);
+      window.setTimeout(checkAuth, 1);
+    }
+
+    function checkAuth() {
+      gapi.auth.authorize({
+        client_id: clientId,
+        scope: scopes,
+        immediate: false
+      }, handleAuthResult);
+    }
+
+    function handleAuthResult(authResult) {
+      if (authResult && !authResult.error) {
+        accessToken = authResult;
+        loadGmailApi();
+      }
+    }
+
+    function loadGmailApi() {
+      gapi.client.setApiKey("");
+      gapi.client.load('gmail', 'v1', loadCallback);
+      gapi.client.setApiKey(apiKey);
+    }
+
+    function loadCallback() {
+      return;
+    }
+
+    function composeTidy() {
+      return;
+    }
+
+    function sendEmail(to, title, msg) {
+      sendMessage({
+          'To': to,
+          'Subject': title,
+        },
+        msg,
+        composeTidy
+      );
+
+      return false;
+    }
+
+    function sendMessage(headers_obj, message, callback) {
+      var email = '';
+
+      for (var header in headers_obj)
+        email += header += ": " + headers_obj[header] + "\r\n";
+
+      email += "\r\n" + message;
+
+      var sendRequest = gapi.client.gmail.users.messages.send({
+        //'auth': accessToken,
+        'userId': 'me',
+        'resource': {
+          'raw': window.btoa(email) //.replace(/\+/g, '-').replace(/\//g, '_')
+        }
+      });
+
+      return sendRequest.execute(function(response) {
+        console.log(response);
+      });
+    }
+
+  </script>
+
+  <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+
+  <script>
+    // inclui cargas horárias dependendo do curso
+    function updateHours() {
+      var get = $('select option:selected').val();
+      if (get == 1)
+        $('#hours').val(172);
+      else if (get == 2)
+        $('#hours').val(144);
+      else if ((get >= 3 && get <= 5) || get == 9)
+        $('#hours').val(24)
+      else
+        $('#hours').val(16);
+    }
+
+    // init
+    updateHours()
+
+    // onchange
+    $('select[name="course"]').on('change', function() {
+      updateHours()
+    });
+
+  </script>
+
+  <script>
+
+    // Print Certificate 
+    $("#button").click(function() {
+
+      if (csvData.length <= 1) {
+        alert("O arquivo CSV deve conter ao menos um aluno");
+        return;
+      }
+
+      var myAddress = web3js.eth.coinbase
+      console.log(web3js)
+      if (!myAddress) {
+        alert("Você não está usando um browser compatível com o Ethereum. Instale o Metamask no seu browser de preferência para poder enviar transações.");
+        return;
+      }
+
+
+      var transactionObject = {
+        from: myAddress,
+        gas: 900000,
+        gasPrice: 20000000000
+      };
+
+      var transactionData = {
+        course: $("#course option:selected").text().toString(),
+        hours: $("#hours").val(),
+        date: $("#dates").val(),
+      };
+
+      for (i = 1; i < csvData.length; i++) {
+
+        var data = csvData[i][0].split(',');
+        if (data[0] == "") break;
+
+        var name = data[0] + " " + data[1];
+        var email = data[2];
+
+        echosContract.printCertificate.sendTransaction(name, transactionData.course, transactionData.hours, transactionData.date, transactionObject, (error, transaction) => {
+
+          // send email
+          if (!error) {
+            var sent = false;
+            // get transaction result 
+            var timer = setInterval(function() {
+              web3.eth.getTransactionReceipt(transaction, function(e, receipt) {
+                if (receipt) {
+                  const decodedLogs = abiDecoder.decodeLogs(receipt.logs);
+                  const certContract = decodedLogs[0].events[0].value;
+                  const name = decodedLogs[0].events[1].value;
+                  // find email in array
+                  for (j = 1; j < csvData.length; j++) {
+                    if (csvData[j][0].split(',')[0] + " " + csvData[j][0].split(',')[1] == name)
+                      sendEmail(csvData[j][0].split(',')[2], "Echos - seu certificado foi publicado no BLockchain Ethereum", "Veja seu certificado em " + certificateURL + certContract)
+                  }
+                  clearInterval(timer);
+                }
+              });
+            }, 10000);
+          } else
+            console.log(error)
+        });
+      }
+
+    });
+
+  </script>
+
+  <script>
+    // CSV stuff
+    var csvData = []
+
+    function handleFiles(files) {
+      // Check for the various File API support.
+      if (window.FileReader) {
+        // FileReader are supported.
+        getAsText(files[0]);
+      } else {
+        alert('FileReader are não suportado pelo seu Browser.');
+      }
+    }
+
+    function getAsText(fileToRead) {
+      var reader = new FileReader();
+      // Read file into memory as UTF-8      
+      reader.readAsText(fileToRead);
+      // Handle errors load
+      reader.onload = loadHandler;
+      reader.onerror = errorHandler;
+    }
+
+    function loadHandler(event) {
+      var csv = event.target.result;
+      processData(csv);
+    }
+
+    function processData(csv) {
+      var allTextLines = csv.split(/\r\n|\n/);
+      var lines = [];
+      for (var i = 0; i < allTextLines.length; i++) {
+        var data = allTextLines[i].split(';');
+        var tarr = [];
+        for (var j = 0; j < data.length; j++) {
+          tarr.push(data[j]);
+        }
+        lines.push(tarr);
+      }
+      csvData = lines;
+    }
+
+    function errorHandler(evt) {
+      if (evt.target.error.name == "NotReadableError") {
+        alert("Não foi possível ler o arquivo !");
+      }
+    }
+
+  </script>
+
+</template>
