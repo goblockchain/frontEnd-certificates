@@ -287,7 +287,7 @@ Template.home.onRendered(function () {
   function appendRow(data) {
     $("#certificates").DataTable().row.add([
       "<button class='btn btn-primary btn-xs btn-send-email'><i class='fa fa-send'></i></button> " + data[0],
-      "<a class='certificate-contract' href'#' >" + data[1] + "</a>",
+      "<a class='certificate-contract' style='cursor: pointer;' href'#' >" + data[1] + "</a>",
       data[2],
       data[3],
       data[4],
