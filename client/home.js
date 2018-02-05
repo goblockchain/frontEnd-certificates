@@ -2,7 +2,15 @@ import datatables from 'datatables.net';
 import datatables_bs from 'datatables.net-bs';
 import 'datatables.net-bs/css/dataTables.bootstrap.css';
 
+Template.home.helpers({
+  sending() {
+    return Session.get("sending");
+  },
+});
+
 Template.home.onCreated(function () {
+
+  Session.set("sending", 0)
 
   if (!Meteor.userId())
     Router.go("/login")
@@ -12,22 +20,44 @@ Template.home.onCreated(function () {
 
 });
 
+Template.home.events({
+  'click .btn-send-email' (event, instance) {
+    event.preventDefault();
+    data = [{
+        value: event.target.parentElement.parentElement.parentElement.childNodes[1].innerText
+      },
+      {
+        value: event.target.parentElement.parentElement.parentElement.childNodes[2].innerText
+      },
+      {
+        value: event.target.parentElement.parentElement.parentElement.childNodes[3].innerText
+      },
+      {
+        value: event.target.parentElement.parentElement.parentElement.childNodes[4].innerText
+      },
+      {
+        value: event.target.parentElement.parentElement.parentElement.childNodes[5].innerText
+      }]
 
+    if (confirm("Reenviar o email para " + data[1].value + "?"))
+      enviaEmail(data);
+
+  },
+  'click .certificate-contract' (event, instance) {
+    event.preventDefault();
+    window.open(certificateURL + event.target.innerHTML);
+  },
+});
 
 Template.home.onRendered(function () {
 
-  var certificateURL = "http://localhost:8000/certificado.html?";
+  certificateURL = "http://localhost:8000/certificado.html?";
 
   // Data table
   $('#certificates').dataTable({
     "language": {
       "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Portuguese-Brasil.json"
     }
-  });
-
-  $('#certificates').on('click', 'tr', function (event) {
-    if (event.currentTarget.cells[1].innerText.length == 42)
-      window.location.href = certificateURL + event.currentTarget.cells[1].innerText;
   });
 
   // Web3 stuff
@@ -256,11 +286,12 @@ Template.home.onRendered(function () {
   // append row to the HTML table
   function appendRow(data) {
     $("#certificates").DataTable().row.add([
-      data[0],
-      data[1],
+      "<button class='btn btn-primary btn-xs btn-send-email'><i class='fa fa-send'></i></button> " + data[0],
+      "<a class='certificate-contract' href'#' >" + data[1] + "</a>",
       data[2],
       data[3],
-      data[4]
+      data[4],
+      data[5]
     ]).draw();
   }
 
@@ -270,7 +301,6 @@ Template.home.onRendered(function () {
     toBlock: 'latest'
   });
 
-  var shownCertificates = new Array()
   certificates.watch(function (error, result) {
 
     if (!error) {
@@ -278,11 +308,11 @@ Template.home.onRendered(function () {
         result.blockNumber.toString(),
         result.args.contractAddress,
         result.args._name,
+        result.args.email,
         result.args._course,
         result.args._dates,
       ]
 
-      shownCertificates.push(data[1]);
       appendRow(data);
 
     } else {

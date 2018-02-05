@@ -1,6 +1,10 @@
 <template name="home">
 
   <div id="printCertificateForm" class="container print-certificate" style="display: none;">
+    
+    {{#if sending}}
+    <div class="alert alert-danger" role="alert"><b>Enviando {{sending}} certificados.</b> Não feche a janela, para que os emails sejam enviados para os alunos.</div>
+    {{/if}}
 
     <h1>Novos certificados</h1><br>
 
@@ -68,6 +72,9 @@
               Nome
             </th>
             <th>
+              Email
+            </th>
+            <th>
               Curso
             </th>
             <th>
@@ -82,9 +89,6 @@
     </div>
 
   </div> <br><br>
-
-  <!-- Twitter abi-decoder -->
-<!--  <script src="./compatibility/abi-decoder.js"></script>-->
 
   <script>
     // email stuff
@@ -123,20 +127,27 @@
       return;
     }
 
-    function composeTidy() {
-      return;
-    }
-
     function sendEmail(to, title, msg) {
       sendMessage({
           'To': to,
           'Subject': title,
         },
-        msg,
-        composeTidy
+        msg
       );
 
       return false;
+    }
+    
+    //
+    
+    function enviaEmail(data) { // data: output from blockchain transaction (decodedLogs.events)
+      const certContract = data[0].value;
+      const name = data[1].value;
+      const email = data[2].value;
+      const course = data[3].value;
+      const dates = data[4].value;
+      
+      sendEmail(email, "Echos - seu certificado foi publicado no blockchain Ethereum", "Veja seu certificado do curso " + course + " realizado em " + dates + " no link " + certificateURL + certContract)
     }
 
     function sendMessage(headers_obj, message, callback) {
@@ -151,7 +162,7 @@
         //'auth': accessToken,
         'userId': 'me',
         'resource': {
-          'raw': window.btoa(email) //.replace(/\+/g, '-').replace(/\//g, '_')
+          'raw': window.btoa(email).replace(/\+/g, '-').replace(/\//g, '_')
         }
       });
 
@@ -189,7 +200,6 @@
   </script>
 
   <script>
-
     // Print Certificate 
     $("#button").click(function() {
 
@@ -199,7 +209,7 @@
       }
 
       var myAddress = web3js.eth.coinbase
-      console.log(web3js)
+      
       if (!myAddress) {
         alert("Você não está usando um browser compatível com o Ethereum. Instale o Metamask no seu browser de preferência para poder enviar transações.");
         return;
@@ -226,7 +236,8 @@
         var name = data[0] + " " + data[1];
         var email = data[2];
 
-        echosContract.printCertificate.sendTransaction(name, transactionData.course, transactionData.hours, transactionData.date, transactionObject, (error, transaction) => {
+        Session.set("sending",Session.get("sending")+1);
+        echosContract.printCertificate.sendTransaction(name, email, transactionData.course, transactionData.hours, transactionData.date, transactionObject, (error, transaction) => {
 
           // send email
           if (!error) {
@@ -236,13 +247,8 @@
               web3.eth.getTransactionReceipt(transaction, function(e, receipt) {
                 if (receipt) {
                   const decodedLogs = abiDecoder.decodeLogs(receipt.logs);
-                  const certContract = decodedLogs[0].events[0].value;
-                  const name = decodedLogs[0].events[1].value;
-                  // find email in array
-                  for (j = 1; j < csvData.length; j++) {
-                    if (csvData[j][0].split(',')[0] + " " + csvData[j][0].split(',')[1] == name)
-                      sendEmail(csvData[j][0].split(',')[2], "Echos - seu certificado foi publicado no BLockchain Ethereum", "Veja seu certificado em " + certificateURL + certContract)
-                  }
+                  enviaEmail(decodedLogs[0].events)
+                  Session.set("sending",Session.get("sending")-1);;
                   clearInterval(timer);
                 }
               });

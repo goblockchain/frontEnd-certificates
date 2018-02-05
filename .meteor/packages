@@ -25,3 +25,5 @@ accounts-base
 accounts-google
 google-config-ui
 accounts-ui
+fortawesome:fontawesome
+session
