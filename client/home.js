@@ -49,68 +49,8 @@ Template.home.onRendered(function () {
   if (injectedWeb3)
     $('#printCertificateForm').show();
 
-  var contractAddress = "0xa70c07b5c6365f6b14c7e4d8d21a9ef04d2a8ede";
-  var contractAbi = [{
-      "constant": true,
-      "inputs": [],
-      "name": "paused",
-      "outputs": [{
-        "name": "",
-        "type": "bool"
-      }],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [{
-          "name": "_user",
-          "type": "address"
-        },
-        {
-          "name": "_transaction",
-          "type": "string"
-        }
-      ],
-      "name": "hasAccess",
-      "outputs": [{
-        "name": "",
-        "type": "bool"
-      }],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [{
-          "name": "_user",
-          "type": "address"
-        },
-        {
-          "name": "_transaction",
-          "type": "string"
-        }
-      ],
-      "name": "grantAccess",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [{
-        "name": "tokenContract",
-        "type": "address"
-      }],
-      "name": "withdrawTokens",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
+  var contractAddress = "0xdf5696ec7d222fefe60fbf9f0792cf5605f6e81c";
+  var contractAbi = [
     {
       "constant": false,
       "inputs": [],
@@ -119,54 +59,35 @@ Template.home.onRendered(function () {
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
-    },
+	},
     {
       "constant": false,
-      "inputs": [{
-        "name": "_certificateContract",
-        "type": "address"
-      }],
-      "name": "invalidateCertificate",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "anonymous": false,
-      "inputs": [{
-          "indexed": false,
-          "name": "contractAddress",
+      "inputs": [
+        {
+          "name": "tokenContract",
           "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "_name",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "name": "_course",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "name": "_dates",
-          "type": "string"
-        }
-      ],
-      "name": "logPrintedCertificate",
-      "type": "event"
-    },
-    {
-      "constant": false,
-      "inputs": [],
-      "name": "pause",
+			}
+		],
+      "name": "withdrawTokens",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
-    },
+	},
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+			}
+		],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+	},
     {
       "constant": false,
       "inputs": [],
@@ -175,52 +96,156 @@ Template.home.onRendered(function () {
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
-    },
+	},
     {
       "constant": false,
-      "inputs": [{
+      "inputs": [
+        {
           "name": "_name",
           "type": "string"
-        },
+			},
+        {
+          "name": "_email",
+          "type": "string"
+			},
         {
           "name": "_course",
           "type": "string"
-        },
+			},
         {
           "name": "_hours",
           "type": "uint256"
-        },
+			},
         {
           "name": "_dates",
           "type": "string"
-        }
-      ],
+			}
+		],
       "name": "printCertificate",
-      "outputs": [{
-        "name": "_certificateAddress",
-        "type": "address"
-      }],
+      "outputs": [
+        {
+          "name": "_certificateAddress",
+          "type": "address"
+			}
+		],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
-    },
+	},
     {
       "constant": false,
-      "inputs": [{
+      "inputs": [],
+      "name": "pause",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+	},
+    {
+      "constant": false,
+      "inputs": [
+        {
           "name": "_user",
           "type": "address"
-        },
+			},
         {
           "name": "_transaction",
-          "type": "string"
-        }
-      ],
+          "type": "uint256"
+			}
+		],
+      "name": "grantAccess",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+	},
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_certificateContract",
+          "type": "address"
+			}
+		],
+      "name": "invalidateCertificate",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+	},
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_user",
+          "type": "address"
+			},
+        {
+          "name": "_transaction",
+          "type": "uint256"
+			}
+		],
       "name": "revokeAccess",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
-    }
+	},
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_user",
+          "type": "address"
+			},
+        {
+          "name": "_transaction",
+          "type": "uint256"
+			}
+		],
+      "name": "hasAccess",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+			}
+		],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+	},
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "contractAddress",
+          "type": "address"
+			},
+        {
+          "indexed": false,
+          "name": "_name",
+          "type": "string"
+			},
+        {
+          "indexed": false,
+          "name": "email",
+          "type": "string"
+			},
+        {
+          "indexed": false,
+          "name": "_course",
+          "type": "string"
+			},
+        {
+          "indexed": false,
+          "name": "_dates",
+          "type": "string"
+			}
+		],
+      "name": "logPrintedCertificate",
+      "type": "event"
+	}
   ]
 
   echosContract = web3js.eth.contract(contractAbi).at(contractAddress);
