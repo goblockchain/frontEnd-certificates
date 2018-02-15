@@ -32,6 +32,12 @@
             <option value=9>Mobilize! Estratégias para Transformação</option>
             <option value=10>Visual Thinking</option>
             <option value=11>Growth Hacking</option>
+            <option value=12>Business Design Innovation</option>
+            <option value=13>Design Thinking for Business</option>
+            <option value=14>Facilitation for Business</option>
+            <option value=15>Innovation Journey</option>
+            <option value=16>Service Design for Business</option>
+            <option value=17>Social Innovation for Business</option>
           </select>
         </div>
       </div>
@@ -66,7 +72,7 @@
               Bloco
             </th>
             <th>
-              Smart Contract
+              Endereço
             </th>
             <th>
               Nome
@@ -185,8 +191,10 @@
         $('#hours').val(144);
       else if ((get >= 3 && get <= 5) || get == 9)
         $('#hours').val(24)
-      else
+      else if (get < 12)
         $('#hours').val(16);
+      else
+        $('#hours').val(0);
     }
 
     // init

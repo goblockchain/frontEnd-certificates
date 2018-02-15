@@ -79,7 +79,7 @@ Template.home.onRendered(function () {
   if (injectedWeb3)
     $('#printCertificateForm').show();
 
-  var contractAddress = "0xc5452d2f42c4ad570f3af3b492e48d9cf10cf998";
+  var contractAddress = "0x19561607f4c5d05d5ad0997b2bb7eaecea5da8a1";
   var contractAbi = [
     {
       "constant": false,
@@ -131,6 +131,63 @@ Template.home.onRendered(function () {
       "constant": false,
       "inputs": [
         {
+          "name": "_user",
+          "type": "address"
+			},
+        {
+          "name": "_transaction",
+          "type": "uint8"
+			}
+		],
+      "name": "revokeAccess",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+	},
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+			}
+		],
+      "name": "certificates",
+      "outputs": [
+        {
+          "name": "name",
+          "type": "string"
+			},
+        {
+          "name": "email",
+          "type": "string"
+			},
+        {
+          "name": "course",
+          "type": "string"
+			},
+        {
+          "name": "dates",
+          "type": "string"
+			},
+        {
+          "name": "courseHours",
+          "type": "uint16"
+			},
+        {
+          "name": "valid",
+          "type": "bool"
+			}
+		],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+	},
+    {
+      "constant": false,
+      "inputs": [
+        {
           "name": "_name",
           "type": "string"
 			},
@@ -144,7 +201,7 @@ Template.home.onRendered(function () {
 			},
         {
           "name": "_hours",
-          "type": "uint256"
+          "type": "uint16"
 			},
         {
           "name": "_dates",
@@ -155,9 +212,23 @@ Template.home.onRendered(function () {
       "outputs": [
         {
           "name": "_certificateAddress",
-          "type": "address"
+          "type": "bytes32"
 			}
 		],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+	},
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_certificateAddress",
+          "type": "bytes32"
+			}
+		],
+      "name": "invalidateCertificate",
+      "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
@@ -180,42 +251,10 @@ Template.home.onRendered(function () {
 			},
         {
           "name": "_transaction",
-          "type": "uint256"
+          "type": "uint8"
 			}
 		],
       "name": "grantAccess",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-	},
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_certificateContract",
-          "type": "address"
-			}
-		],
-      "name": "invalidateCertificate",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-	},
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_user",
-          "type": "address"
-			},
-        {
-          "name": "_transaction",
-          "type": "uint256"
-			}
-		],
-      "name": "revokeAccess",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -230,7 +269,7 @@ Template.home.onRendered(function () {
 			},
         {
           "name": "_transaction",
-          "type": "uint256"
+          "type": "uint8"
 			}
 		],
       "name": "hasAccess",
@@ -250,7 +289,7 @@ Template.home.onRendered(function () {
         {
           "indexed": false,
           "name": "contractAddress",
-          "type": "address"
+          "type": "bytes32"
 			},
         {
           "indexed": false,
@@ -271,12 +310,34 @@ Template.home.onRendered(function () {
           "indexed": false,
           "name": "_dates",
           "type": "string"
+			},
+        {
+          "indexed": false,
+          "name": "_hours",
+          "type": "uint16"
 			}
 		],
       "name": "logPrintedCertificate",
       "type": "event"
+	},
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "user",
+          "type": "address"
+			},
+        {
+          "indexed": false,
+          "name": "access",
+          "type": "uint8"
+			}
+		],
+      "name": "accessGranted",
+      "type": "event"
 	}
-  ]
+]
 
   echosContract = web3js.eth.contract(contractAbi).at(contractAddress);
   abiDecoder.addABI(contractAbi);
