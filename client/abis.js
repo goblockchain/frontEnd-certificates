@@ -1,45 +1,26 @@
-contractAddress = "0x73A3d58d5fD438E8Ce33d2d0ee1DFbd417878d97";
+contractAddress = "0x720fc849fca5304d578a6ef3f276301ce242a718";
 contractAbi = [
   {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "bytes32"
-			}
-		],
-    "name": "certificates",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-			}
-		],
+    "constant": false,
+    "inputs": [],
+    "name": "unpause",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
 	},
   {
-    "constant": true,
+    "constant": false,
     "inputs": [
       {
-        "name": "_user",
+        "name": "tokenContract",
         "type": "address"
-			},
-      {
-        "name": "_transaction",
-        "type": "uint8"
 			}
 		],
-    "name": "hasAccess",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-			}
-		],
+    "name": "withdrawTokens",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
 	},
   {
@@ -59,65 +40,7 @@ contractAbi = [
   {
     "constant": false,
     "inputs": [],
-    "name": "pause",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-	},
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "user",
-        "type": "address"
-			},
-      {
-        "indexed": false,
-        "name": "access",
-        "type": "uint8"
-			}
-		],
-    "name": "accessGranted",
-    "type": "event"
-	},
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "tokenContract",
-        "type": "address"
-			}
-		],
-    "name": "withdrawTokens",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-	},
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "unpause",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-	},
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_user",
-        "type": "address"
-			},
-      {
-        "name": "_transaction",
-        "type": "uint8"
-			}
-		],
-    "name": "grantAccess",
+    "name": "withdrawBalance",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -142,6 +65,80 @@ contractAbi = [
     "type": "function"
 	},
   {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32"
+			}
+		],
+    "name": "certificates",
+    "outputs": [
+      {
+        "name": "name",
+        "type": "string"
+			},
+      {
+        "name": "email",
+        "type": "string"
+			},
+      {
+        "name": "course",
+        "type": "string"
+			},
+      {
+        "name": "dates",
+        "type": "string"
+			},
+      {
+        "name": "courseHours",
+        "type": "uint16"
+			},
+      {
+        "name": "valid",
+        "type": "bool"
+			}
+		],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+	},
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_name",
+        "type": "string"
+			},
+      {
+        "name": "_email",
+        "type": "string"
+			},
+      {
+        "name": "_course",
+        "type": "string"
+			},
+      {
+        "name": "_hours",
+        "type": "uint16"
+			},
+      {
+        "name": "_dates",
+        "type": "string"
+			}
+		],
+    "name": "printCertificate",
+    "outputs": [
+      {
+        "name": "_certificateAddress",
+        "type": "bytes32"
+			}
+		],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+	},
+  {
     "constant": false,
     "inputs": [
       {
@@ -153,6 +150,56 @@ contractAbi = [
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
+    "type": "function"
+	},
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "pause",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+	},
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_user",
+        "type": "address"
+			},
+      {
+        "name": "_transaction",
+        "type": "uint8"
+			}
+		],
+    "name": "grantAccess",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+	},
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_user",
+        "type": "address"
+			},
+      {
+        "name": "_transaction",
+        "type": "uint8"
+			}
+		],
+    "name": "hasAccess",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+			}
+		],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
 	},
   {
@@ -193,47 +240,20 @@ contractAbi = [
     "type": "event"
 	},
   {
-    "constant": false,
-    "inputs": [],
-    "name": "withdrawBalance",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-	},
-  {
-    "constant": false,
+    "anonymous": false,
     "inputs": [
       {
-        "name": "_name",
-        "type": "string"
+        "indexed": false,
+        "name": "user",
+        "type": "address"
 			},
       {
-        "name": "_email",
-        "type": "string"
-			},
-      {
-        "name": "_course",
-        "type": "string"
-			},
-      {
-        "name": "_hours",
-        "type": "uint16"
-			},
-      {
-        "name": "_dates",
-        "type": "string"
+        "indexed": false,
+        "name": "access",
+        "type": "uint8"
 			}
 		],
-    "name": "printCertificate",
-    "outputs": [
-      {
-        "name": "_certificateAddress",
-        "type": "bytes32"
-			}
-		],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "name": "accessGranted",
+    "type": "event"
 	}
 ]

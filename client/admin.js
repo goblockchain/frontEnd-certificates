@@ -7,6 +7,90 @@ Template.admin.events({
     event.preventDefault();
     window.open("https://rinkeby.etherscan.io/address/" + event.target.innerHTML);
   },
+  'click .btn-revoke-access' (event, instance) {
+    event.preventDefault();
+
+    var myAddress = web3js.eth.coinbase
+
+    if (!myAddress) {
+      alert("Você não está usando um browser compatível com o Ethereum. Instale o Metamask no seu browser de preferência para poder enviar transações.");
+      return;
+    }
+
+    var transactionObject = {
+      from: myAddress,
+      gas: 900000,
+      gasPrice: 1000000000
+    };
+
+    echosContract.revokeAccess.sendTransaction(event.target.id, event.target.name, transactionObject, (error, transaction) => {
+
+      // send email
+      if (!error) {
+        var sent = false;
+        // get transaction result 
+        console.log(transaction);
+      } else
+        console.log(error)
+    });
+
+  },
+  'click #send-invalid' (event, instance) {
+    event.preventDefault();
+
+    var myAddress = web3js.eth.coinbase
+
+    if (!myAddress) {
+      alert("Você não está usando um browser compatível com o Ethereum. Instale o Metamask no seu browser de preferência para poder enviar transações.");
+      return;
+    }
+
+    var transactionObject = {
+      from: myAddress,
+      gas: 900000,
+      gasPrice: 1000000000
+    };
+
+    echosContract.invalidateCertificate.sendTransaction(document.getElementById("certificate-address").value, transactionObject, (error, transaction) => {
+
+      // send email
+      if (!error) {
+        var sent = false;
+        // get transaction result 
+        console.log(transaction);
+      } else
+        console.log(error)
+    });
+
+  },
+  'click #send-grant-access' (event, instance) {
+    event.preventDefault();
+
+    var myAddress = web3js.eth.coinbase
+
+    if (!myAddress) {
+      alert("Você não está usando um browser compatível com o Ethereum. Instale o Metamask no seu browser de preferência para poder enviar transações.");
+      return;
+    }
+
+    var transactionObject = {
+      from: myAddress,
+      gas: 900000,
+      gasPrice: 1000000000
+    };
+
+    echosContract.grantAccess.sendTransaction(document.getElementById("user-address").value, document.getElementById("access-right").value, transactionObject, (error, transaction) => {
+
+      // send email
+      if (!error) {
+        var sent = false;
+        // get transaction result 
+        console.log(transaction);
+      } else
+        console.log(error)
+    });
+
+  },
 });
 
 Template.admin.onRendered(function () {
@@ -43,8 +127,17 @@ Template.admin.onRendered(function () {
     $("#access-rights").DataTable().row.add([
       "<a class='user-address' style='cursor: pointer;' href'#' >" + data[0] + "</a>",
       accessRight,
-      "<span id='" + data[0] + "'><i class='fa fa-spinner fa-pulse'></i><span>"
+      "<span id='" + data[0] + data[1].toString() + "'><i class='fa fa-spinner fa-pulse'></i><span>"
     ]).draw();
+  }
+
+  function updateUserRights(user, accessRight) {
+    echosContract.hasAccess.call(user, accessRight, function (error, result) {
+      if (result)
+        document.getElementById(user + accessRight).innerHTML = "sim <button id='" + user + "' name='" + accessRight + "' class='btn btn-danger pull-right btn-xs btn-revoke-access'>Revogar</button>";
+      else
+        document.getElementById(user + accessRight).textContent = "não";
+    });
   }
 
   // Get current users
@@ -64,6 +157,7 @@ Template.admin.onRendered(function () {
       ]
 
       appendRow(data);
+      updateUserRights(result.args.user, result.args.access.toString(10));
 
     } else {
       console.log(error);
