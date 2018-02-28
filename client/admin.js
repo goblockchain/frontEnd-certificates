@@ -5,7 +5,7 @@ import 'datatables.net-bs/css/dataTables.bootstrap.css';
 Template.admin.events({
   'click .user-address' (event, instance) {
     event.preventDefault();
-    window.open("https://rinkeby.etherscan.io/address/" + event.target.innerHTML);
+    window.open("https://etherscan.io/address/" + event.target.innerHTML);
   },
   'click .btn-revoke-access' (event, instance) {
     event.preventDefault();
