@@ -51,7 +51,7 @@ Template.home.events({
 
 Template.home.onRendered(function () {
 
-  certificateURL = "http://localhost:8000/certificado.html?";
+  certificateURL = "https://echos.cc/certificado/?";
 
   // Data table
   $('#certificates').dataTable({

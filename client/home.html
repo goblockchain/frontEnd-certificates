@@ -153,7 +153,10 @@
       const course = data[3].value;
       const dates = data[4].value;
       
-      sendEmail(email, "Echos - seu certificado foi publicado no blockchain Ethereum", "Veja seu certificado do curso " + course + " realizado em " + dates + " no link " + certificateURL + certContract)
+      var title = "Echos - seu certificado foi publicado no blockchain Ethereum"
+      //var msg = "Veja seu certificado do curso " + course + " realizado em " + dates + " no link " + certificateURL + certContract
+      var msg = emailContent +course+ emailContent2 +name+ emailContent3 +certificateURL+certContract+ emailContent4
+      sendEmail(email, title, msg)
     }
 
     function sendMessage(headers_obj, message, callback) {
@@ -161,6 +164,8 @@
 
       for (var header in headers_obj)
         email += header += ": " + headers_obj[header] + "\r\n";
+        email += "Content-Type: text/html; charset='UTF-8'\r\n" +
+        "Content-Transfer-Encoding: base64\r\n\r\n"
 
       email += "\r\n" + message;
 
@@ -238,11 +243,11 @@
 
       for (i = 1; i < csvData.length; i++) {
 
-        var data = csvData[i][0].split(',');
+        var data = csvData[i];
         if (data[0] == "") break;
 
-        var name = data[0] + " " + data[1];
-        var email = data[2];
+        var name = data[1]; //  + " " + data[1];
+        var email = data[0];
 
         Session.set("sending",Session.get("sending")+1);
         echosContract.printCertificate.sendTransaction(name, email, transactionData.course, transactionData.hours, transactionData.date, transactionObject, (error, transaction) => {
@@ -302,7 +307,7 @@
       var allTextLines = csv.split(/\r\n|\n/);
       var lines = [];
       for (var i = 0; i < allTextLines.length; i++) {
-        var data = allTextLines[i].split(';');
+        var data = allTextLines[i].split('\t');
         var tarr = [];
         for (var j = 0; j < data.length; j++) {
           tarr.push(data[j]);
