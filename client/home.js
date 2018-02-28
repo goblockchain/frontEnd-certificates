@@ -72,7 +72,7 @@ Template.home.onRendered(function () {
     var injectedWeb3 = true;
   } else {
     //set the provider to Rinkeby/Infura, will only work for view functions
-    web3js = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/kak6M2Qgf7oHycGaCI2E"));
+    web3js = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/kak6M2Qgf7oHycGaCI2E"));
     console.log("infura")
   }
 
