@@ -153,10 +153,11 @@
       const course = data[3].value;
       const dates = data[4].value;
       
-      var title = "Echos - seu certificado foi publicado no blockchain Ethereum"
+      var title = "Echos - Certificado " + course
       //var msg = "Veja seu certificado do curso " + course + " realizado em " + dates + " no link " + certificateURL + certContract
       var msg = emailContent +course+ emailContent2 +name+ emailContent3 +certificateURL+certContract+ emailContent4
       sendEmail(email, title, msg)
+      // sendEmail("fabiohildebrand@gmail.com", "Echos - Certificado " + "Design Thinking Experience", emailContent +"Design Thinking Experience"+ emailContent2 +"Fabio Hildebrand"+ emailContent3 +"certificteurl"+ emailContent4)
     }
 
     function sendMessage(headers_obj, message, callback) {
