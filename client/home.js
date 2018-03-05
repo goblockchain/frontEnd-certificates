@@ -23,7 +23,7 @@ Template.home.onCreated(function () {
 Template.home.events({
   'click .btn-send-email' (event, instance) {
     event.preventDefault();
-    data = [{
+    var data = [{
         value: event.target.parentElement.parentElement.parentElement.childNodes[1].innerText
       },
       {
