@@ -20,7 +20,7 @@ Template.admin.events({
     var transactionObject = {
       from: myAddress,
       gas: 900000,
-      gasPrice: 1000000000
+      gasPrice: 3000000000
     };
 
     echosContract.revokeAccess.sendTransaction(event.target.id, event.target.name, transactionObject, (error, transaction) => {
@@ -48,7 +48,7 @@ Template.admin.events({
     var transactionObject = {
       from: myAddress,
       gas: 900000,
-      gasPrice: 1000000000
+      gasPrice: 3000000000
     };
 
     echosContract.invalidateCertificate.sendTransaction(document.getElementById("certificate-address").value, transactionObject, (error, transaction) => {
@@ -76,7 +76,7 @@ Template.admin.events({
     var transactionObject = {
       from: myAddress,
       gas: 900000,
-      gasPrice: 1000000000
+      gasPrice: 3000000000
     };
 
     echosContract.grantAccess.sendTransaction(document.getElementById("user-address").value, document.getElementById("access-right").value, transactionObject, (error, transaction) => {

@@ -39,6 +39,9 @@ Template.home.events({
         value: event.target.parentElement.parentElement.parentElement.childNodes[5].innerText
       }]
 
+    console.log(data)
+    return
+
     if (confirm("Reenviar o email para " + data[1].value + "?"))
       enviaEmail(data);
 
