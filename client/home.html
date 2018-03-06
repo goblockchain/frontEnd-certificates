@@ -98,51 +98,51 @@
 
   <script>
     // email stuff
-    var clientId = '200877815660-bt784fja6aefn0mmmm1hcej7jsidld1b.apps.googleusercontent.com';
-    var apiKey = '53qtvr1c61ILLTdr4XOmhNQ_';
-    var scopes = 'https://www.googleapis.com/auth/gmail.send'; // 'https://mail.google.com/'; 
-    var accessToken;
+//    var clientId = '200877815660-bt784fja6aefn0mmmm1hcej7jsidld1b.apps.googleusercontent.com';
+//    var apiKey = '53qtvr1c61ILLTdr4XOmhNQ_';
+//    var scopes = 'https://www.googleapis.com/auth/gmail.send'; // 'https://mail.google.com/'; 
+//    var accessToken;
 
-    function handleClientLoad() {
-      gapi.client.setApiKey(apiKey);
-      window.setTimeout(checkAuth, 1);
-    }
-
-    function checkAuth() {
-      gapi.auth.authorize({
-        client_id: clientId,
-        scope: scopes,
-        immediate: false
-      }, handleAuthResult);
-    }
-
-    function handleAuthResult(authResult) {
-      if (authResult && !authResult.error) {
-        accessToken = authResult;
-        loadGmailApi();
-      }
-    }
-
-    function loadGmailApi() {
-      gapi.client.setApiKey("");
-      gapi.client.load('gmail', 'v1', loadCallback);
-      gapi.client.setApiKey(apiKey);
-    }
-
-    function loadCallback() {
-      return;
-    }
-
-    function sendEmail(to, title, msg) {
-      sendMessage({
-          'To': to,
-          'Subject': title,
-        },
-        msg
-      );
-
-      return false;
-    }
+//    function handleClientLoad() {
+//      gapi.client.setApiKey(apiKey);
+//      window.setTimeout(checkAuth, 1);
+//    }
+//
+//    function checkAuth() {
+//      gapi.auth.authorize({
+//        client_id: clientId,
+//        scope: scopes,
+//        immediate: false
+//      }, handleAuthResult);
+//    }
+//
+//    function handleAuthResult(authResult) {
+//      if (authResult && !authResult.error) {
+//        accessToken = authResult;
+//        loadGmailApi();
+//      }
+//    }
+//
+//    function loadGmailApi() {
+//      gapi.client.setApiKey("");
+//      gapi.client.load('gmail', 'v1', loadCallback);
+//      gapi.client.setApiKey(apiKey);
+//    }
+//
+//    function loadCallback() {
+//      return;
+//    }
+//
+//    function sendEmail(to, title, msg) {
+//      sendMessage({
+//          'To': to,
+//          'Subject': title,
+//        },
+//        msg
+//      );
+//
+//      return false;
+//    }
     
     //
     
@@ -150,43 +150,50 @@
       const certContract = data[0].value;
       const name = data[1].value;
       const email = data[2].value;
-      const course = data[3].value;
+      var course = data[3].value;
       const dates = data[4].value;
-      var firstName = " " + name.substr(0,name.indexOf(" "));
+      var firstName = " " + name.substr(0,name.indexOf(" ")) + ", ";
+      if (firstName.length < 4)
+        firstName = " " + name + ", ";
       
       var title = "Echos - Certificado " + course
       //var msg = "Veja seu certificado do curso " + course + " realizado em " + dates + " no link " + certificateURL + certContract
       var msg = emailContent +course+ emailContent2 +firstName+ emailContent3 +certificateURL+certContract+ emailContent4
-      sendEmail(email, title, msg)
+      
+      Meteor.call('sendEmail', email, title, msg)
+      
+      //sendEmail(email, title, msg)
+      
+      //sendEmail("ndafpi4bsp@gmail.com", title, msg)
       // sendEmail("fabiohildebrand@gmail.com", "Echos - Certificado " + "Design Thinking Experience", emailContent +"Design Thinking Experience"+ emailContent2 +"Fabio Hildebrand"+ emailContent3 +"certificteurl"+ emailContent4)
     }
 
-    function sendMessage(headers_obj, message, callback) {
-      var email = '';
-
-      for (var header in headers_obj)
-        email += header += ": " + headers_obj[header] + "\r\n";
-        email += "Content-Type: text/html; charset='UTF-8'\r\n" +
-        "Content-Transfer-Encoding: base64\r\n\r\n"
-
-      email += "\r\n" + message;
-
-      var sendRequest = gapi.client.gmail.users.messages.send({
-        //'auth': accessToken,
-        'userId': 'me',
-        'resource': {
-          'raw': window.btoa(email).replace(/\+/g, '-').replace(/\//g, '_')
-        }
-      });
-
-      return sendRequest.execute(function(response) {
-        console.log(response);
-      });
-    }
+//    function sendMessage(headers_obj, message, callback) {
+//      var email = '';
+//
+//      for (var header in headers_obj)
+//        email += header += ": " + headers_obj[header] + "\r\n";
+//        email += "Content-Type: text/html; charset='UTF-8'\r\n" +
+//        "Content-Transfer-Encoding: base64\r\n\r\n"
+//
+//      email += "\r\n" + message;
+//      
+//      var sendRequest = gapi.client.gmail.users.messages.send({
+//        //'auth': accessToken,
+//        'userId': 'me',
+//        'resource': {
+//          'raw': window.btoa(email).replace(/\+/g, '-').replace(/\//g, '_')
+//        }
+//      });
+//
+//      return sendRequest.execute(function(response) {
+//        console.log(response);
+//      });
+//    }
 
   </script>
 
-  <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+<!--  <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>-->
 
   <script>
     // inclui cargas horárias dependendo do curso

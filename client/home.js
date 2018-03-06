@@ -23,24 +23,38 @@ Template.home.onCreated(function () {
 Template.home.events({
   'click .btn-send-email' (event, instance) {
     event.preventDefault();
-    var data = [{
-        value: event.target.parentElement.parentElement.parentElement.childNodes[1].innerText
+    if (event.target.parentElement.parentElement.parentElement.childNodes[1].innerText.length == 66)
+      var data = [{
+          value: event.target.parentElement.parentElement.parentElement.childNodes[1].innerText
       },
-      {
-        value: event.target.parentElement.parentElement.parentElement.childNodes[2].innerText
+        {
+          value: event.target.parentElement.parentElement.parentElement.childNodes[2].innerText
       },
-      {
-        value: event.target.parentElement.parentElement.parentElement.childNodes[3].innerText
+        {
+          value: event.target.parentElement.parentElement.parentElement.childNodes[3].innerText
       },
-      {
-        value: event.target.parentElement.parentElement.parentElement.childNodes[4].innerText
+        {
+          value: event.target.parentElement.parentElement.parentElement.childNodes[4].innerText
       },
-      {
-        value: event.target.parentElement.parentElement.parentElement.childNodes[5].innerText
+        {
+          value: event.target.parentElement.parentElement.parentElement.childNodes[5].innerText
       }]
-
-    console.log(data)
-    return
+    else
+      var data = [{
+          value: event.target.parentElement.parentElement.childNodes[1].innerText
+      },
+        {
+          value: event.target.parentElement.parentElement.childNodes[2].innerText
+      },
+        {
+          value: event.target.parentElement.parentElement.childNodes[3].innerText
+      },
+        {
+          value: event.target.parentElement.parentElement.childNodes[4].innerText
+      },
+        {
+          value: event.target.parentElement.parentElement.childNodes[5].innerText
+      }]
 
     if (confirm("Reenviar o email para " + data[1].value + "?"))
       enviaEmail(data);
