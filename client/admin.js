@@ -127,15 +127,17 @@ Template.admin.onRendered(function () {
     $("#access-rights").DataTable().row.add([
       "<a class='user-address' style='cursor: pointer;' href'#' >" + data[0] + "</a>",
       accessRight,
-      "<span id='" + data[0] + data[1].toString() + "'><i class='fa fa-spinner fa-pulse'></i><span>"
+      "<span class='" + data[0] + data[1].toString() + "'><i class='fa fa-spinner fa-pulse'></i><span>"
     ]).draw();
   }
 
   function updateUserRights(user, accessRight) {
     echosContract.hasAccess.call(user, accessRight, function (error, result) {
-      if (result)
-        document.getElementById(user + accessRight).innerHTML = "sim <button id='" + user + "' name='" + accessRight + "' class='btn btn-danger pull-right btn-xs btn-revoke-access'>Revogar</button>";
-      else
+      console.log()
+      if (result) {
+        for (i = 0; i < document.getElementsByClassName(user + accessRight).length; i++)
+          document.getElementsByClassName(user + accessRight)[i].innerHTML = "sim <button id='" + user + "' name='" + accessRight + "' class='btn btn-danger pull-right btn-xs btn-revoke-access'>Revogar</button>";
+      } else
         document.getElementById(user + accessRight).textContent = "não";
     });
   }
