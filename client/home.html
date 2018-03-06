@@ -255,7 +255,7 @@
         var data = csvData[i];
         if (data[0] == "") break;
 
-        var name = data[1] + data[2];
+        var name = data[1] + " " + data[2];
         var email = data[0];
 
         Session.set("sending",Session.get("sending")+1);
