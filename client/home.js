@@ -74,7 +74,8 @@ Template.home.onRendered(function () {
   $('#certificates').dataTable({
     "language": {
       "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Portuguese-Brasil.json"
-    }
+    },
+    "order": [[0, "desc"]]
   });
 
   // Web3 stuff
