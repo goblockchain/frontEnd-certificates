@@ -12,8 +12,8 @@ Template.home.onCreated(function () {
 
   Session.set("sending", 0)
 
-  if (!Meteor.userId())
-    Router.go("/login")
+  //  if (!Meteor.userId())
+  //    Router.go("/login")
 
   datatables(window, $);
   datatables_bs(window, $);

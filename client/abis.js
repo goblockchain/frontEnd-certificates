@@ -1,4 +1,4 @@
-contractAddress = "0xB26DD671549FcE2D56d0dA9F047d2a6A7999fCE3";
+contractAddress = "0x2F74c925F077adD2f0BAaEc4D5B6c1Eee3220059";
 contractAbi = [
   {
     "constant": false,
