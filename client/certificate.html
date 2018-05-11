@@ -1,0 +1,28 @@
+<template name="certificate">
+  
+  {{#if invalid}}
+    <div class="container">
+      <h1>Certificado Inválido ou Não Encontrado</h1>
+    </div>
+  {{else}}
+    <div id="certificate" class="image">
+      <img id="diploma" src="" width="100%" />
+      <span id="name" class="texto nome"></span>
+      <span id="course" class="texto curso-horas"></span>
+      <span id="dates" class="texto datas"></span><br>
+      <span id="qart" class="qr-code">{{> kjuaImage certificateAddress}}</span>
+      
+    </div>
+
+    <div class="container printPDF no-print">
+      <br>
+      <button class="btn btn-lg btn-success" id="printPDF"><span class="glyphicon glyphicon-download"></span> Baixar</button>
+      <br><br>
+
+      <br><br>
+    </div>
+  {{/if}}
+  
+  <script type="text/javascript" src="/html2canvas.min.js"></script>
+  
+</template>

@@ -1,267 +1,172 @@
-<template name="home">
-
-  <div id="printCertificateForm" class="container print-certificate" style="display: none;">
-    
-    {{#if sending}}
-    <div class="alert alert-danger" role="alert"><b>Enviando {{sending}} certificados.</b> Não feche a janela, para que os emails sejam enviados para os alunos.</div>
-    {{/if}}
-
-    <h1>Novos certificados <a href="/admin" class="btn btn-danger pull-right">Admin</a></h1><br>
-
-    <form class="form-horizontal">
-
-      <div class="form-group">
-        <label for="csvFileInput" class="col-sm-2 control-label">Alunos (csv)</label>
-        <div class="col-sm-10">
-          <input type="file" class="form-control" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv">
-        </div>
-      </div>
-      
-      <div class="form-group">
-        <label for="data" class="col-sm-2 control-label">Dados</label>
-        <div class="col-sm-10">
-          <textarea class="form-control" rows="5" id="data" placeholder="email ; nome ; sobrenome"></textarea>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="course" class="col-sm-2 control-label">Curso</label>
-        <div class="col-sm-10">
-          <select class="form-control" id="course" name="course">
-            <option value=1>Impacta - Workshop Blockchain</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="hours" class="col-sm-2 control-label">Carga horária</label>
-        <div class="col-sm-10">
-          <input id="hours" class="form-control" name="hours" type="number">
-        </div>
-      </div> 
-
-      <div class="form-group">
-        <label for="dates" class="col-sm-2 control-label">Datas</label>
-        <div class="col-sm-10">
-          <input id="dates" type="text" class="form-control">
-        </div>
-      </div>
-
-    </form>
-
-    <button id="button" class="btn btn-success pull-right">Criar</button>
-
-  </div>
-
-  <div class="container list-certificates">
-    <h1>Certificados</h1><br>
-    <div id="events">
-      <table id="certificates" class="table table-hover">
-        <thead>
-          <tr>
-            <th>
-              Bloco
-            </th>
-            <th>
-              Endereço
-            </th>
-            <th>
-              Nome
-            </th>
-            <th>
-              Email
-            </th>
-            <th>
-              Curso
-            </th>
-            <th>
-              Data
-            </th>
-          </tr>
-        </thead>
-        <tbody id="table-body">
-        </tbody>
-      </table>
-
+<Template name="home">
+  <div id="landing" class="container">
+    <h1>Bizanc.io - Certificado </h1>
+    <h4>Procure pelo seu certificado abaixo</h4>
+    <div class="input-group input-group-search">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#scanModal" id="qrCode" type="button"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></button>
+      </span>
+      <input id="address" class="form-control" name="address" type="text" placeholder="0x...">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" id="button" type="button">Procurar</button>
+      </span>
     </div>
-
-  </div> <br><br>
-
-  <script>
-    
-    function enviaEmail(data) { // data: output from blockchain transaction (decodedLogs.events)
-      const certContract = data[0].value;
-      const name = data[1].value;
-      const email = data[2].value;
-      var course = data[3].value;
-      const dates = data[4].value;
-      var firstName = " " + name.substr(0,name.indexOf(" ")) + ", ";
-      if (firstName.length < 4)
-        firstName = " " + name + ", ";
-      
-      var title = "Echos - Certificado " + course
-      var msg = emailContent +course+ emailContent2 +firstName+ emailContent3 +certificateURL+certContract+ emailContent4
-      
-      Meteor.call('sendEmail', email, title, msg)
-      
-    }
-
-  </script>
-
-
-  <script>
-    // inclui cargas horárias dependendo do curso
-    function updateHours() {
-      var get = $('select option:selected').val();
-      if (get == 1)
-        $('#hours').val(172);
-      else if (get == 2)
-        $('#hours').val(144);
-      else if ((get >= 3 && get <= 5) || get == 9)
-        $('#hours').val(24)
-      else if (get < 12)
-        $('#hours').val(16);
-      else
-        $('#hours').val(0);
-    }
-
-    // init
-    updateHours()
-
-    // onchange
-    $('select[name="course"]').on('change', function() {
-      updateHours()
-    });
-
-  </script>
-
-  <script>
-    // Print Certificate 
+  </div>
+  
+<!--  // scan modal-->
+    <div class="modal fade" id="scanModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span> Scanner</h4>
+          </div>
+          <div class="modal-body">
+            <div class="container" style="width:100%;">
+              <!-- webcamera view component -->
+              <video id="webcameraPreview" playsinline autoplay muted loop style="width: 100%;"></video>
+              <select class="form-control" id="webcameraChanger" onchange="cameraChange($(this).val());"></select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  <script type="text/javascript" src="/adapter.min.js"></script>
+  <script type="text/javascript" src="/instascan.js"></script>
+  <script type="text/javascript">
     $("#button").click(function() {
-
-      if ($("textarea#data").val().length <= 20) {
-        alert("Não há dados para emissão dos certificados. O campo dados deve conter um aluno por linha, no formato <email>;<nome>;<sobrenome>");
-        return;
-      }
-      
-      textareaData = $("textarea#data").val().split('\n')
-        
-      textareaData.forEach((val, index)=>{
-         textareaData[index] = val.split(';')
-      })
-
-      var myAddress = web3js.eth.coinbase
-      
-      if (!myAddress) {
-        alert("Você não está usando um browser compatível com o Ethereum. Instale o Metamask no seu browser de preferência para poder enviar transações.");
-        return;
-      }
-
-
-      var transactionObject = {
-        from: myAddress,
-        gas: 900000,
-        gasPrice: 3000000000
-      };
-
-      var transactionData = {
-        course: $("#course option:selected").text().toString(),
-        hours: $("#hours").val(),
-        date: $("#dates").val(),
-      };
-
-      for (i = 0; i < textareaData.length; i++) {
-
-        var data = textareaData[i];
-        if (data[0] == "") break;
-
-        var name = data[1] + " " + data[2];
-        var email = data[0];
-
-        Session.set("sending",Session.get("sending")+1);
-        echosContract.printCertificate.sendTransaction(name, email, transactionData.course, transactionData.hours, transactionData.date, transactionObject, (error, transaction) => {
-
-          // send email
-          if (!error) {
-            var sent = false;
-            // get transaction result 
-            var timer = setInterval(function() {
-              web3.eth.getTransactionReceipt(transaction, function(e, receipt) {
-                if (receipt) {
-                  const decodedLogs = abiDecoder.decodeLogs(receipt.logs);
-                  enviaEmail(decodedLogs[0].events)
-                  Session.set("sending",Session.get("sending")-1);;
-                  clearInterval(timer);
-                }
-              });
-            }, 10000);
-          } else
-            console.log(error)
-        });
-      }
-
-    });
-
-  </script>
-
-  <script>
-    // CSV stuff
-    var csvData = []
-
-    function handleFiles(files) {
-      // Check for the various File API support.
-      if (window.FileReader) {
-        // FileReader are supported.
-        getAsText(files[0]);
-      } else {
-        alert('FileReader are não suportado pelo seu Browser.');
-      }
-    }
-
-    function getAsText(fileToRead) {
-      var reader = new FileReader();
-      // Read file into memory as UTF-8      
-      reader.readAsText(fileToRead);
-      // Handle errors load
-      reader.onload = loadHandler;
-      reader.onerror = errorHandler;
-    }
-
-    function loadHandler(event) {
-      var csv = event.target.result;
-      processData(csv);
-    }
-
-    function processData(csv) {
-      var allTextLines = csv.split(/\r\n|\n/);
-      var lines = [];
-      for (var i = 0; i < allTextLines.length; i++) {
-        var data = allTextLines[i].split('\t');
-        var tarr = [];
-        for (var j = 0; j < data.length; j++) {
-          tarr.push(data[j]);
-        }
-        lines.push(tarr);
-      }
-      csvData = lines;
-      updateTextarea(csvData)
-    }
+      Router.go("/certificate/" + $('#address').val())
+     })
     
-    function updateTextarea(data) {
-      var text = ""
-      data.forEach((val, index)=>{
-        if (index!=0)
-         text+= val[0]+";"+val[1]+";"+val[2]+"\n"
-      });
-      $("textarea#data").val(text);
+    //instascan scanner object
+    scanner = {};
+
+    // HTML element
+    function initHtmlElement(id) {
+      return document.getElementById(id);
     }
 
-    function errorHandler(evt) {
-      if (evt.target.error.name == "NotReadableError") {
-        alert("Não foi possível ler o arquivo !");
-      }
+    //init video object options
+    function initVideoObjectOptions(id) {
+      scanner = {};
+      return {
+        // The HTML element to use for the camera's video preview. Must be a <video> element.
+        // When the camera is active, this element will have the "active" CSS class, otherwise,
+        // it will have the "inactive" class. By default, an invisible element will be created to
+        // host the video.
+        video: initHtmlElement(id),
+        // Whether to scan continuously for QR codes. If false, use scanner.scan() to manually scan.
+        // If true, the scanner emits the "scan" event when a QR code is scanned. Default true.
+        continuous: true,
+        // Whether to horizontally mirror the video preview. This is helpful when trying to
+        // scan a QR code with a user-facing camera. Default true.
+        mirror: false,
+        // Whether to include the scanned image data as part of the scan result. See the "scan" event
+        // for image format details. Default false.
+        captureImage: false,
+        // Only applies to continuous mode. Whether to actively scan when the tab is not active.
+        // When false, this reduces CPU usage when the tab is not active. Default true.
+        backgroundScan: true,
+        // Only applies to continuous mode. The period, in milliseconds, before the same QR code
+        // will be recognized in succession. Default 5000 (5 seconds).
+        refractoryPeriod: 5000,
+        // Only applies to continuous mode. The period, in rendered frames, between scans. A lower scan period
+        // increases CPU usage but makes scan response faster. Default 1 (i.e. analyze every frame).
+        scanPeriod: 1
+      };
+
+    }
+
+    //init Avaliable Cameras of current device
+    function initAvaliableCameras(selectObject, callBack) {
+      var max = 0;
+      Instascan.Camera.getCameras().then(function(cameras) {
+
+        for (var i = 0; i < cameras.length; i++) {
+          var o = $("<option value='" + i + "'></option>");
+          o.text(cameras[i].name);
+          o.appendTo(selectObject);
+          max = i;
+        }
+
+        //choose the rear camera (last)
+        selectObject.val(max);
+
+        callBack();
+      });
+    }
+
+    //Get Selected Camera
+    function getSelectedCamera(selectObject) {
+      return parseInt(selectObject.val());
+    }
+
+    //Init camera
+    function initCamera(i) {
+      scanner.stop();
+
+      Instascan.Camera.getCameras().then(function(cameras) {
+        scanner.start(cameras[i]);
+      });
+    }
+
+    function scanStart(ondetect) {
+      //Emitted when a QR code is scanned using the camera in continuous mode (see scanner.continuous).
+      scanner.addListener('scan', function(content) {
+        ondetect(content);
+      });
+    }
+
+    //change camera
+    function cameraChange(cameraNum) {
+      initCamera(parseInt(cameraNum));
+    }
+
+    //init QrCode scanner
+    function initScanner(options) {
+      scanner = new Instascan.Scanner(options);
     }
 
   </script>
+  
+ <script type="text/javascript">
 
-</template>
+    $('#scanModal').on('shown.bs.modal', function(e) {
+      //HTML video component for web camera
+      var videoComponent = $("#webcameraPreview");
+      //HTML select component for cameras change
+      var webcameraChanger = $("#webcameraChanger");
+      var options = {};
+      //init options for scanner
+      options = initVideoObjectOptions("webcameraPreview");
+      var cameraId = 0;
+
+      initScanner(options);
+
+      initAvaliableCameras(
+        webcameraChanger,
+        function() {
+          cameraId = parseInt(getSelectedCamera(webcameraChanger));
+        }
+      );
+
+      initCamera(cameraId);
+
+      scanStart(function(data) {
+        $('#scanModal').modal('toggle');
+        console.log(data)
+        $('#address').val(data)
+        $("#button").click();
+      });
+    })
+
+    $('#scanModal').on('hidden.bs.modal', function(e) {
+      scanner.stop();
+    })
+   
+
+  </script>
+
+  
+</Template>

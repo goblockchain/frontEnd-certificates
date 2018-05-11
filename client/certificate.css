@@ -1,0 +1,76 @@
+@font-face {
+  font-family: echos;
+  src: url(/Circular/CircularStd-Book.otf);
+}
+
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+}
+
+body {
+  background-color: whitesmoke
+}
+
+.input-group-search {
+  position: relative;
+  width: 950px;
+  left: 20px;
+}
+
+.image {
+  position: relative;
+  width: 950px;
+  left: 20px;
+}
+
+.kjua-image {
+  width: 140px;
+  height: 140px;
+}
+
+.texto {
+  left: 8.3%;
+  width: 100%;
+  font-family: echos;
+  color: rgb(88, 89, 91);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.nome {
+  position: absolute;
+  top: 38%;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.curso-horas {
+  position: absolute;
+  top: 55%;
+  font-size: 13px;
+}
+
+.datas {
+  position: absolute;
+  top: 60%;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.qr-code {
+  position: absolute;
+  top: 66%;
+  left: 77.8%;
+  width: 100%;
+}
+
+.image {
+  pointer-events: none;
+}

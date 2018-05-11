@@ -9,6 +9,7 @@ autoupdate@1.4.0
 babel-compiler@7.0.0
 babel-runtime@1.2.2
 base64@1.0.10
+bchrobot:kjua@0.1.0
 binary-heap@1.0.10
 blaze@2.3.2
 blaze-html-templates@1.1.2

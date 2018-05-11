@@ -1,0 +1,241 @@
+<template name="issuer">
+
+  <div id="printCertificateForm" class="container print-certificate" style="display: none;">
+    
+    {{#if sending}}
+    <div class="alert alert-danger" role="alert"><b>Enviando {{sending}} certificados.</b> Não feche a janela, para que os emails sejam enviados para os alunos.</div>
+    {{/if}}
+
+    <h1>Novos certificados <a href="/admin" class="btn btn-danger pull-right">Admin</a></h1><br>
+
+    <form class="form-horizontal">
+
+      <div class="form-group">
+        <label for="csvFileInput" class="col-sm-2 control-label">Alunos (csv)</label>
+        <div class="col-sm-10">
+          <input type="file" class="form-control" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="data" class="col-sm-2 control-label">Dados</label>
+        <div class="col-sm-10">
+          <textarea class="form-control" rows="5" id="data" placeholder="email ; nome ; sobrenome"></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="course" class="col-sm-2 control-label">Curso</label>
+        <div class="col-sm-10">
+          <select class="form-control" id="course" name="course">
+            <option value=1>Impacta - Workshop Blockchain</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="hours" class="col-sm-2 control-label">Carga horária</label>
+        <div class="col-sm-10">
+          <input id="hours" class="form-control" name="hours" type="number">
+        </div>
+      </div> 
+
+      <div class="form-group">
+        <label for="dates" class="col-sm-2 control-label">Datas</label>
+        <div class="col-sm-10">
+          <input id="dates" type="text" class="form-control">
+        </div>
+      </div>
+
+    </form>
+
+    <button id="button" class="btn btn-success pull-right">Criar</button>
+
+  </div>
+
+  <div class="container list-certificates">
+    <h1>Certificados</h1><br>
+    <div id="events">
+      <table id="certificates" class="table table-hover">
+        <thead>
+          <tr>
+            <th>
+              Bloco
+            </th>
+            <th>
+              Endereço
+            </th>
+            <th>
+              Nome
+            </th>
+            <th>
+              Email
+            </th>
+            <th>
+              Curso
+            </th>
+            <th>
+              Data
+            </th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+        </tbody>
+      </table>
+
+    </div>
+
+  </div> <br><br>
+
+  <script>
+    
+    function enviaEmail(data) { // data: output from blockchain transaction (decodedLogs.events)
+      const certContract = data[0].value;
+      const name = data[1].value;
+      const email = data[2].value;
+      var course = data[3].value;
+      const dates = data[4].value;
+      var firstName = " " + name.substr(0,name.indexOf(" ")) + ", ";
+      if (firstName.length < 4)
+        firstName = " " + name + ", ";
+      
+      var title = "Echos - Certificado " + course
+      var msg = Veja seu certificado em + certificateURL+certContract
+      
+      Meteor.call('sendEmail', email, title, msg)
+      
+    }
+
+  </script>
+
+
+  <script>
+    // Print Certificate 
+    $("#button").click(function() {
+
+      if ($("textarea#data").val().length <= 20) {
+        alert("Não há dados para emissão dos certificados. O campo dados deve conter um aluno por linha, no formato <email>;<nome>;<sobrenome>");
+        return;
+      }
+      
+      textareaData = $("textarea#data").val().split('\n')
+        
+      textareaData.forEach((val, index)=>{
+         textareaData[index] = val.split(';')
+      })
+
+      var myAddress = web3js.eth.coinbase
+      
+      if (!myAddress) {
+        alert("Você não está usando um browser compatível com o Ethereum. Instale o Metamask no seu browser de preferência para poder enviar transações.");
+        return;
+      }
+
+
+      var transactionObject = {
+        from: myAddress,
+        gas: 900000,
+        gasPrice: 3000000000
+      };
+
+      var transactionData = {
+        course: $("#course option:selected").text().toString(),
+        hours: $("#hours").val(),
+        date: $("#dates").val(),
+      };
+
+      for (i = 0; i < textareaData.length; i++) {
+
+        var data = textareaData[i];
+        if (data[0] == "") break;
+
+        var name = data[1] + " " + data[2];
+        var email = data[0];
+
+        Session.set("sending",Session.get("sending")+1);
+        echosContract.printCertificate.sendTransaction(name, email, transactionData.course, transactionData.hours, transactionData.date, transactionObject, (error, transaction) => {
+
+          // send email
+          if (!error) {
+            var sent = false;
+            // get transaction result 
+            var timer = setInterval(function() {
+              web3.eth.getTransactionReceipt(transaction, function(e, receipt) {
+                if (receipt) {
+                  const decodedLogs = abiDecoder.decodeLogs(receipt.logs);
+                  enviaEmail(decodedLogs[0].events)
+                  Session.set("sending",Session.get("sending")-1);;
+                  clearInterval(timer);
+                }
+              });
+            }, 10000);
+          } else
+            console.log(error)
+        });
+      }
+
+    });
+
+  </script>
+
+  <script>
+    // CSV stuff
+    var csvData = []
+
+    function handleFiles(files) {
+      // Check for the various File API support.
+      if (window.FileReader) {
+        // FileReader are supported.
+        getAsText(files[0]);
+      } else {
+        alert('FileReader are não suportado pelo seu Browser.');
+      }
+    }
+
+    function getAsText(fileToRead) {
+      var reader = new FileReader();
+      // Read file into memory as UTF-8      
+      reader.readAsText(fileToRead);
+      // Handle errors load
+      reader.onload = loadHandler;
+      reader.onerror = errorHandler;
+    }
+
+    function loadHandler(event) {
+      var csv = event.target.result;
+      processData(csv);
+    }
+
+    function processData(csv) {
+      var allTextLines = csv.split(/\r\n|\n/);
+      var lines = [];
+      for (var i = 0; i < allTextLines.length; i++) {
+        var data = allTextLines[i].split('\t');
+        var tarr = [];
+        for (var j = 0; j < data.length; j++) {
+          tarr.push(data[j]);
+        }
+        lines.push(tarr);
+      }
+      csvData = lines;
+      updateTextarea(csvData)
+    }
+    
+    function updateTextarea(data) {
+      var text = ""
+      data.forEach((val, index)=>{
+        if (index!=0)
+         text+= val[0]+";"+val[1]+";"+val[2]+"\n"
+      });
+      $("textarea#data").val(text);
+    }
+
+    function errorHandler(evt) {
+      if (evt.target.error.name == "NotReadableError") {
+        alert("Não foi possível ler o arquivo !");
+      }
+    }
+
+  </script>
+
+</template>
