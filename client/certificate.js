@@ -5,6 +5,9 @@ Template.certificate.helpers({
   invalid() {
     return Session.get("invalid");
   },
+  valid() {
+    return Session.get("valid");
+  }
 });
 
 Template.certificate.events({
@@ -47,6 +50,8 @@ Template.certificate.onCreated(function () {
         return;
       }
 
+      Session.set("valid", true)
+
       if (result[2] == "Impacta - Workshop Blockchain")
         document.getElementById("diploma").src = "/CertificadoDTS.png";
 
@@ -55,6 +60,6 @@ Template.certificate.onCreated(function () {
       document.getElementById("dates").textContent = "Realizado nas datas " + result[3] + ".";
 
     } else
-      console.error(error);
+      Session.set("invalid", true)
   });
 });
