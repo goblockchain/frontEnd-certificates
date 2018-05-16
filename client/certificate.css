@@ -32,7 +32,7 @@ body {
 }
 
 .texto {
-  left: 8.3%;
+  left: 5%;
   width: 100%;
   font-family: echos;
   color: rgb(88, 89, 91);
@@ -66,8 +66,8 @@ body {
 
 .qr-code {
   position: absolute;
-  top: 66%;
-  left: 77.8%;
+  top: 71%;
+  left: 82%;
   width: 100%;
 }
 

@@ -53,11 +53,11 @@ Template.certificate.onCreated(function () {
       Session.set("valid", true)
 
       if (result[2] == "Impacta - Workshop Blockchain")
-        document.getElementById("diploma").src = "/CertificadoDTS.png";
+        document.getElementById("diploma").src = "/template.png";
 
       document.getElementById("name").textContent = result[0];
       document.getElementById("course").textContent = result[2] + " é um curso da Impacta em parceria com a Bizanc.io com duração de " + result[4].c[0] + " horas.";
-      document.getElementById("dates").textContent = "Realizado nas datas " + result[3] + ".";
+      document.getElementById("dates").textContent = "Realizado em " + result[3] + ".";
 
     } else
       Session.set("invalid", true)
