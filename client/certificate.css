@@ -32,7 +32,7 @@ body {
 }
 
 .texto {
-  left: 5%;
+  left: 7%;
   width: 100%;
   font-family: echos;
   color: rgb(88, 89, 91);
@@ -46,7 +46,7 @@ body {
 
 .nome {
   position: absolute;
-  top: 38%;
+  top: 40%;
   font-size: 30px;
   font-weight: bold;
 }
