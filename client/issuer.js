@@ -21,45 +21,45 @@ Template.issuer.onCreated(function () {
 });
 
 Template.issuer.events({
-  'click .btn-send-email' (event, instance) {
-    event.preventDefault();
-    if (event.target.parentElement.parentElement.parentElement.childNodes[1].innerText.length == 66)
-      var data = [{
-          value: event.target.parentElement.parentElement.parentElement.childNodes[1].innerText
-      },
-        {
-          value: event.target.parentElement.parentElement.parentElement.childNodes[2].innerText
-      },
-        {
-          value: event.target.parentElement.parentElement.parentElement.childNodes[3].innerText
-      },
-        {
-          value: event.target.parentElement.parentElement.parentElement.childNodes[4].innerText
-      },
-        {
-          value: event.target.parentElement.parentElement.parentElement.childNodes[5].innerText
-      }]
-    else
-      var data = [{
-          value: event.target.parentElement.parentElement.childNodes[1].innerText
-      },
-        {
-          value: event.target.parentElement.parentElement.childNodes[2].innerText
-      },
-        {
-          value: event.target.parentElement.parentElement.childNodes[3].innerText
-      },
-        {
-          value: event.target.parentElement.parentElement.childNodes[4].innerText
-      },
-        {
-          value: event.target.parentElement.parentElement.childNodes[5].innerText
-      }]
-
-    //    if (confirm("Reenviar o email para " + data[1].value + "?"))
-    //      enviaEmail(data);
-
-  },
+  //  'click .btn-send-email' (event, instance) {
+  //    event.preventDefault();
+  //    if (event.target.parentElement.parentElement.parentElement.childNodes[1].innerText.length == 66)
+  //      var data = [{
+  //          value: event.target.parentElement.parentElement.parentElement.childNodes[1].innerText
+  //      },
+  //        {
+  //          value: event.target.parentElement.parentElement.parentElement.childNodes[2].innerText
+  //      },
+  //        {
+  //          value: event.target.parentElement.parentElement.parentElement.childNodes[3].innerText
+  //      },
+  //        {
+  //          value: event.target.parentElement.parentElement.parentElement.childNodes[4].innerText
+  //      },
+  //        {
+  //          value: event.target.parentElement.parentElement.parentElement.childNodes[5].innerText
+  //      }]
+  //    else
+  //      var data = [{
+  //          value: event.target.parentElement.parentElement.childNodes[1].innerText
+  //      },
+  //        {
+  //          value: event.target.parentElement.parentElement.childNodes[2].innerText
+  //      },
+  //        {
+  //          value: event.target.parentElement.parentElement.childNodes[3].innerText
+  //      },
+  //        {
+  //          value: event.target.parentElement.parentElement.childNodes[4].innerText
+  //      },
+  //        {
+  //          value: event.target.parentElement.parentElement.childNodes[5].innerText
+  //      }]
+  //
+  //    //    if (confirm("Reenviar o email para " + data[1].value + "?"))
+  //    //      enviaEmail(data);
+  //
+  //  },
   'click .certificate-contract' (event, instance) {
     event.preventDefault();
     window.open(certificateURL + event.target.innerHTML);
@@ -78,26 +78,8 @@ Template.issuer.onRendered(function () {
     "order": [[0, "desc"]]
   });
 
-  // Web3 stuff
+  $('#printCertificateForm').show();
 
-  // Init web3
-  var Web3 = require('web3');
-
-  var injectedWeb3 = false;
-  if (typeof web3 !== 'undefined') {
-    web3js = new Web3(web3.currentProvider);
-    console.log("injected web3")
-    var injectedWeb3 = true;
-  } else {
-    //set the provider to Rinkeby/Infura, will only work for view functions
-    web3js = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/kak6M2Qgf7oHycGaCI2E"));
-    console.log("infura")
-  }
-
-  if (injectedWeb3)
-    $('#printCertificateForm').show();
-
-  echosContract = web3js.eth.contract(contractAbi).at(contractAddress);
   abiDecoder.addABI(contractAbi);
 
   // table functions
@@ -106,16 +88,17 @@ Template.issuer.onRendered(function () {
   function appendRow(data) {
     $("#certificates").DataTable().row.add([
       "<button class='btn btn-primary btn-xs btn-send-email'><i class='fa fa-send'></i></button> " + data[0],
-      "<a class='certificate-contract' style='cursor: pointer;' href'#' >" + data[1] + "</a>",
-      data[2],
+      data[1],
+      "<small><a class='certificate-contract' style='cursor: pointer;' href'#' >" + data[2] + "</a></small>",
       data[3],
       data[4],
-      data[5]
+      data[5],
+      data[6]
     ]).draw();
   }
 
   // Get printed certificates
-  var certificates = echosContract.logPrintedCertificate({}, {
+  var certificates = certificateContract.logPrintedCertificate({}, {
     fromBlock: 1600000,
     toBlock: 'latest'
   });
@@ -123,16 +106,24 @@ Template.issuer.onRendered(function () {
   certificates.watch(function (error, result) {
 
     if (!error) {
-      var data = [
-        result.blockNumber.toString(),
-        result.args.contractAddress,
-        result.args._name,
-        result.args.email,
-        result.args._course,
-        result.args._dates,
-      ]
+      let data = result
 
-      appendRow(data);
+      certificateContract.institutions.call(result.args._institution, function (error, result) {
+        if (result) {
+          appendRow([
+              data.blockNumber.toString(),
+              result[1],
+              data.args.contractAddress,
+              data.args._name,
+              data.args.email,
+              data.args._course,
+              data.args._dates,
+            ])
+
+        }
+      });
+
+      ;
 
     } else {
       console.log(error);

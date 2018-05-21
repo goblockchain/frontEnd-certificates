@@ -23,7 +23,7 @@ Template.admin.events({
       gasPrice: 3000000000
     };
 
-    echosContract.revokeAccess.sendTransaction(event.target.id, event.target.name, transactionObject, (error, transaction) => {
+    certificateContract.adminRemoveRole.sendTransaction(event.target.id, event.target.name, transactionObject, (error, transaction) => {
 
       // send email
       if (!error) {
@@ -51,7 +51,7 @@ Template.admin.events({
       gasPrice: 3000000000
     };
 
-    echosContract.invalidateCertificate.sendTransaction(document.getElementById("certificate-address").value, transactionObject, (error, transaction) => {
+    certificateContract.invalidateCertificate.sendTransaction(document.getElementById("certificate-address").value, transactionObject, (error, transaction) => {
 
       // send email
       if (!error) {
@@ -79,7 +79,7 @@ Template.admin.events({
       gasPrice: 3000000000
     };
 
-    echosContract.grantAccess.sendTransaction(document.getElementById("user-address").value, document.getElementById("access-right").value, transactionObject, (error, transaction) => {
+    certificateContract.adminAddRole.sendTransaction(document.getElementById("user-address").value, document.getElementById("access-right").value, transactionObject, (error, transaction) => {
 
       // send email
       if (!error) {
@@ -97,53 +97,28 @@ Template.admin.onRendered(function () {
   datatables(window, $);
   datatables_bs(window, $);
 
-  // Web3 stuff
-
-  // Init web3
-  var Web3 = require('web3');
-
-  var injectedWeb3 = false;
-  if (typeof web3 !== 'undefined') {
-    web3js = new Web3(web3.currentProvider);
-    console.log("injected web3")
-    var injectedWeb3 = true;
-  } else {
-    //set the provider to Rinkeby/Infura, will only work for view functions
-    web3js = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/kak6M2Qgf7oHycGaCI2E"));
-    console.log("infura")
-  }
-
-  echosContract = web3js.eth.contract(contractAbi).at(contractAddress);
-
   // append row to the HTML table
   function appendRow(data) {
-    var accessRight;
-    if (data[1] == 1)
-      accessRight = "Acesso";
-    else if (data[1] == 2)
-      accessRight = "Financeiro";
-    else if (data[1] == 3)
-      accessRight = "Certificados";
     $("#access-rights").DataTable().row.add([
       "<a class='user-address' style='cursor: pointer;' href'#' >" + data[0] + "</a>",
-      accessRight,
-      "<span class='" + data[0] + data[1].toString() + "'><i class='fa fa-spinner fa-pulse'></i><span>"
+      data[1],
+      "<span class='" + data[0] + data[1] + "'><i class='fa fa-spinner fa-pulse'></i><span>"
     ]).draw();
   }
 
   function updateUserRights(user, accessRight) {
-    echosContract.hasAccess.call(user, accessRight, function (error, result) {
-      console.log()
+    certificateContract.hasRole.call(user, accessRight, function (error, result) {
       if (result) {
         for (i = 0; i < document.getElementsByClassName(user + accessRight).length; i++)
           document.getElementsByClassName(user + accessRight)[i].innerHTML = "sim <button id='" + user + "' name='" + accessRight + "' class='btn btn-danger pull-right btn-xs btn-revoke-access'>Revogar</button>";
       } else
-        document.getElementById(user + accessRight).textContent = "não";
+        for (i = 0; i < document.getElementsByClassName(user + accessRight).length; i++)
+          document.getElementsByClassName(user + accessRight)[i].innerHTML = "não";
     });
   }
 
   // Get current users
-  var users = echosContract.accessGranted({}, {
+  var users = certificateContract.RoleAdded({}, {
     fromBlock: 1600000,
     toBlock: 'latest'
   });
@@ -152,14 +127,14 @@ Template.admin.onRendered(function () {
 
     if (!error) {
       var data = [
-        result.args.user,
-        result.args.access.toString(10),
+        result.args.addr,
+        result.args.roleName,
         result.blockNumber,
         result.transactionHash
       ]
 
       appendRow(data);
-      updateUserRights(result.args.user, result.args.access.toString(10));
+      updateUserRights(result.args.addr, result.args.roleName);
 
     } else {
       console.log(error);

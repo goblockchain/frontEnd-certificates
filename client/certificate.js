@@ -7,6 +7,9 @@ Template.certificate.helpers({
   },
   valid() {
     return Session.get("valid");
+  },
+  contractAddress() {
+    return contractAddress;
   }
 });
 
@@ -27,37 +30,27 @@ Template.certificate.events({
 Template.certificate.onCreated(function () {
   // Web3 stuff
 
-  // Init web3
-  var Web3 = require('web3');
-
-  if (typeof web3 !== 'undefined') {
-    web3js = new Web3(web3.currentProvider);
-    console.log("injected web3");
-  } else {
-    //set the provider to Rinkeby/Infura, will only work for view functions
-    web3js = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/kak6M2Qgf7oHycGaCI2E"));
-    console.log("infura")
-  }
-
-  var bizancioContract = web3js.eth.contract(contractAbi).at(contractAddress);
-
-
   // get certificate data
-  bizancioContract.certificates.call(Router.current().params.certificateAddress, function (error, result) {
+  certificateContract.certificates.call(Router.current().params.certificateAddress, function (error, result) {
     if (!error) {
-      if (result[5] == false) {
+      if (result[6] == false) {
         Session.set("invalid", true)
         return;
       }
 
-      Session.set("valid", true)
+      let data = result
 
-      if (result[2] == "Impacta - Workshop Blockchain")
-        document.getElementById("diploma").src = "/template.png";
+      certificateContract.institutions.call(result[2], function (error, result) {
+        if (result) {
+          Session.set("valid", true)
+          console.log(result)
+          document.getElementById("diploma").src = "/template.png";
+          document.getElementById("name").textContent = data[0];
+          document.getElementById("course").textContent = data[3] + " é um curso da " + result[1] + " com duração de " + data[5].c[0] + " horas.";
+          document.getElementById("dates").textContent = "Realizado em " + data[4] + ".";
+        }
+      });
 
-      document.getElementById("name").textContent = result[0];
-      document.getElementById("course").textContent = result[2] + " é um curso da Impacta em parceria com a Bizanc.io com duração de " + result[4].c[0] + " horas.";
-      document.getElementById("dates").textContent = "Realizado em " + result[3] + ".";
 
     } else
       Session.set("invalid", true)
