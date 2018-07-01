@@ -6,6 +6,16 @@ Template.issuer.helpers({
     sending() {
         return Session.get("sending");
     },
+    title() {
+        if (Session.get("currentInstitution"))
+            return Session.get("currentInstitution") + " - Emitir Certificados";
+        else
+            return "Emitir Certificados"
+    },
+    showInstitution() {
+        if (Session.get("currentInstitution"))
+            return "hidden"
+    },
 });
 
 Template.issuer.onCreated(function () {
@@ -115,6 +125,18 @@ Template.issuer.onRendered(function () {
 
     // table functions
 
+    if (Router.current().params.institution) {
+        certificateContract.institutions.call(Router.current().params.institution, function (error, result) {
+            if (result) {
+                if (result[4]) { //instituição ativa
+                    Session.set("currentInstitution", result[1])
+                    $("#institution").val(Router.current().params.institution)
+                }
+            }
+        });
+
+    }
+
     // append row to the HTML table
     function appendRow(data) {
         $("#certificates").DataTable().row.add([
@@ -141,7 +163,7 @@ Template.issuer.onRendered(function () {
             let data = result
 
             certificateContract.institutions.call(result.args._institution, function (error, result) {
-                if (result) {
+                if (result && (Session.get("currentInstitution") ? (Session.get("currentInstitution") == result[1]) : true)) {
                     certificateContract.certificates.call(data.args.contractAddress,
                         function (error, cert) {
                             appendRow([
@@ -169,5 +191,11 @@ Template.issuer.onRendered(function () {
         }
     });
 
+
+});
+
+Template.issuer.onDestroyed(function () {
+
+    Session.set("currentInstitution", false)
 
 });
