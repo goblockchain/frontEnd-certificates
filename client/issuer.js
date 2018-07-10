@@ -16,6 +16,9 @@ Template.issuer.helpers({
         if (Session.get("currentInstitution"))
             return "hidden"
     },
+    showConfig() {
+        return Session.get("currentInstitution")
+    },
 });
 
 Template.issuer.onCreated(function () {
@@ -74,6 +77,11 @@ Template.issuer.events({
         event.preventDefault();
         window.open(certificateURL + event.target.innerHTML);
     },
+    'click #config-modal' (event, instance) {
+        event.preventDefault();
+        Modal.show('configModal')
+    },
+
     'click .send-invalid' (event, instance) {
         event.preventDefault();
 
@@ -198,4 +206,11 @@ Template.issuer.onDestroyed(function () {
 
     Session.set("currentInstitution", false)
 
+});
+
+Template.configModal.events({
+    'change .myFileInput': function (event, template) {
+        var files = event.target.files;
+        console.log(files[0])
+    }
 });
