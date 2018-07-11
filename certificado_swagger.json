@@ -1,0 +1,514 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API Certificado",
+    "description": "Os servços / API de Certficado permite integração com outras aplicações, através de uma\ninterface mais leve e de fácil utilização.Todos os recursos\ndisponibilizados  pela API são baseados em serviços Restful e as mensagens\ntrafegadas no padrão JSON.\n",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/api/v1",
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/certificado/acesso/adicionar": {
+      "post": {
+        "summary": "Adiciona e concede acesso à um novo Usuário",
+        "description": "Adicionar e conceder acesso ao Usuário\n",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "endereco",
+            "in": "formData",
+            "description": "Endereço de chave pública",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "tipoAcesso",
+            "in": "formData",
+            "description": "Tipo de acesso",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Controle Acesso"
+        ],
+        "responses": {
+          "200": {
+            "description": "envio com sucesso",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "400": {
+            "description": "Falha na resposta",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/certificado/acesso/revogar": {
+      "put": {
+        "summary": "Revoga os acessos do Usuário",
+        "description": "Revoga os acessos do Usuário\n",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "endereco",
+            "in": "formData",
+            "description": "Endereço de chave pública",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Controle Acesso"
+        ],
+        "responses": {
+          "200": {
+            "description": "envio com sucesso",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "400": {
+            "description": "Falha na resposta",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/certificado/acesso/consultar": {
+      "get": {
+        "summary": "Consulta Usuarios com acesso",
+        "description": "Consultar Usuarios com acesso",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "endereco",
+            "in": "query",
+            "description": "Endereço da chave pública do Usuário",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "acesso",
+            "in": "query",
+            "description": "Tipo de acesso do Usuário",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "situacao",
+            "in": "query",
+            "description": "Situação do Usuário",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Controle Acesso"
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna lista de Usuarios",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Usuario"
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ou lista vazia de certificados",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/certificado/gerar": {
+      "post": {
+        "summary": "Gera o certificado de uma Instituicao",
+        "description": "Gerar certificado de uma Instituição\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Certificado",
+            "schema": {
+              "$ref": "#/definitions/Certificado"
+            }
+          }
+        ],
+        "tags": [
+          "Certificado"
+        ],
+        "responses": {
+          "200": {
+            "description": "envio com sucesso",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "400": {
+            "description": "Falha na resposta",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/certificado/invalidar": {
+      "put": {
+        "summary": "Invalida um certificado",
+        "description": "Invalidar um certificado de um aluno\n",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "endereço",
+            "description": "Endereço da chave pública do aluno",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          }
+        ],
+        "tags": [
+          "Certificado"
+        ],
+        "responses": {
+          "200": {
+            "description": "envio com sucesso",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "400": {
+            "description": "Falha na resposta",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/certificado/consultar": {
+      "get": {
+        "summary": "Consulta de certificados",
+        "description": "Consultar certificados",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "endereco",
+            "in": "query",
+            "description": "Endereço da chave pública do aluno",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
+            "name": "instituicao",
+            "in": "query",
+            "description": "Institiucao emissora",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome",
+            "in": "query",
+            "description": "Nome do aluno",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "E-mail do aluno",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "curso",
+            "in": "query",
+            "description": "Nome do curso realizado",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "data",
+            "in": "query",
+            "description": "Data de emissao do certificado",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Certificado"
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna lista de Certificados",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Certificado"
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ou lista vazia de certificados",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/certificado/insituicao/adicionar": {
+      "post": {
+        "summary": "Adiciona uma Instituicao Emissora",
+        "description": "Adicionar uma Instituição Emissora\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Instituicao",
+            "schema": {
+              "$ref": "#/definitions/Instituicao"
+            }
+          }
+        ],
+        "tags": [
+          "Instituicao"
+        ],
+        "responses": {
+          "200": {
+            "description": "envio com sucesso",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "400": {
+            "description": "Falha na resposta",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/certificado/instituicao/revogar": {
+      "put": {
+        "summary": "Revoga uma Instituicao Emissora",
+        "description": "Revogar uma Instituição Emissora\n",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "endereço",
+            "description": "Endereço da chave pública da Instituição",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          }
+        ],
+        "tags": [
+          "Instituicao"
+        ],
+        "responses": {
+          "200": {
+            "description": "envio com sucesso",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "400": {
+            "description": "Falha na resposta",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/certificado/instituicao/consultar": {
+      "get": {
+        "tags": [
+          "Instituicao"
+        ],
+        "summary": "Consulta uma Instituicao Emissora",
+        "description": "Consultar Instituições",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "endereco",
+            "in": "query",
+            "description": "Endereço da chave pública do aluno",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nome",
+            "in": "query",
+            "description": "Nome da Instituição",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "situacao",
+            "in": "query",
+            "description": "Situação da Instituição",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna lista de Instituições",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Instituicao"
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ou lista vazia de certificados",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Usuario": {
+      "type": "object",
+      "properties": {
+        "endereco": {
+          "type": "string",
+          "description": "Endereço da chave pública"
+        },
+        "perfil": {
+          "type": "string",
+          "description": "perfil do usuario"
+        },
+        "situacao": {
+          "type": "boolean",
+          "description": "Situação do usuário"
+        }
+      }
+    },
+    "Certificado": {
+      "type": "object",
+      "properties": {
+        "nome": {
+          "type": "string",
+          "description": "Nome completo do aluno"
+        },
+        "email": {
+          "type": "string",
+          "description": "E-mail do aluno"
+        },
+        "instituicao": {
+          "$ref": "#/definitions/Instituicao",
+          "description": "Instituição Emissora do certificado"
+        },
+        "curso": {
+          "type": "string",
+          "description": "Curso realizado"
+        },
+        "data": {
+          "type": "string",
+          "description": "Data do curso no formato [DD/MM/AAAA]"
+        },
+        "duracao": {
+          "type": "integer",
+          "format": "int16",
+          "description": "Duração em horas do curso"
+        },
+        "situacao": {
+          "type": "boolean",
+          "description": "Situação do certificado"
+        }
+      }
+    },
+    "Instituicao": {
+      "type": "object",
+      "properties": {
+        "codigo": {
+          "type": "string",
+          "description": "Código da Instituição Emissora"
+        },
+        "nome": {
+          "type": "string",
+          "description": "Vaida se um certificado é válido"
+        },
+        "validadeInicio": {
+          "type": "string",
+          "description": "data de inicio da Instituição Emissora"
+        },
+        "validadeFim": {
+          "type": "string",
+          "description": "data  de vigência final da Instituição Financeira"
+        },
+        "situacao": {
+          "type": "boolean",
+          "description": "Situação da Instituição Emissora"
+        }
+      }
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
