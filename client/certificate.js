@@ -43,10 +43,14 @@ Template.certificate.onCreated(function () {
             certificateContract.institutions.call(result[2], function (error, result) {
                 if (result) {
                     Session.set("valid", true)
-                    document.getElementById("diploma").src = "/template.png";
+                    document.getElementById("diploma").src = "/certificadoGOtemplate.png";
                     document.getElementById("name").textContent = data[0];
-                    document.getElementById("course").textContent = data[3] + " é um curso da " + result[1] + " com duração de " + data[5].c[0] + " horas.";
-                    document.getElementById("dates").textContent = "Realizado em " + data[4] + ".";
+                    document.getElementById("course").textContent = data[3];
+                    document.getElementById("institution").textContent = result[1];
+                    document.getElementById("hours").textContent = data[5].c[0];
+                    document.getElementById("name-professor").textContent = "Arthur Miranda";
+                    document.getElementById("address-professor").textContent = "0x90e8cbc8e3e4f663a43dbc599acda803bb48b9d5";
+                    document.getElementById("dates").textContent = data[4];
                 }
             });
 
