@@ -6,7 +6,10 @@
     <div class="alert alert-danger" role="alert"><b>Enviando {{sending}} certificados.</b> Não feche a janela, para que os emails sejam enviados para os alunos.</div>
     {{/if}}
 
-    <h1>Emissão de certificados</h1><br>
+    <h1>{{title}} 
+        {{#if showConfig }} <button class="btn btn-primary btn-sm pull-right" id="config-modal"><i class='fa fa-cog'></i></button>
+        {{/if}}
+    </h1><br>
 
     <form class="form-horizontal">
 
@@ -24,8 +27,8 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="course" class="col-sm-2 control-label">Instituição</label>
+      <div class="form-group" {{showInstitution}}>
+        <label for="institution" class="col-sm-2 control-label">Instituição</label>
         <div class="col-sm-10">
           <input id="institution" type="text" class="form-control" placeholder="0x...">
         </div>
@@ -84,6 +87,9 @@
             </th>
             <th>
               Data
+            </th>
+            <th>
+              Válido
             </th>
           </tr>
         </thead>
@@ -247,4 +253,27 @@
 
   </script>
 
+</template>
+
+<template name="configModal">
+	<div class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<h4 class="modal-title">Modelo de Certificado</h4>
+				</div>
+				
+				<div class="modal-body">
+					<input type="file" name="image" class="myFileInput">
+                    
+				</div>
+				
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+				
+			</div>
+		</div>
+	</div>
 </template>
