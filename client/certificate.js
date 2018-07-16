@@ -37,15 +37,15 @@ Template.certificate.onCreated(function () {
                 Session.set("invalid", true)
                 return;
             }
-            let template = Templates.findOne({
-                address: result[2]
-            })
-            console.log(template)
 
             let certificateData = result
 
             certificateContract.institutions.call(certificateData[2], function (error, institutionData) {
                 if (institutionData) {
+                    let template = Templates.findOne({
+                        address: certificateData[2]
+                    })
+                    console.log(template)
                     Session.set("valid", true)
                     document.getElementById("diploma").src = template.image;
                     document.getElementById("name").textContent = certificateData[0];
