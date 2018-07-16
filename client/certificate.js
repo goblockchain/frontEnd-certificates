@@ -37,10 +37,9 @@ Template.certificate.onCreated(function () {
                 Session.set("invalid", true)
                 return;
             }
-            let template = Templates.find({}).fetch()
-            //                Templates.findOne({
-            //                address: result[2]
-            //            })
+            let template = Templates.findOne({
+                address: result[2]
+            })
             console.log(template)
 
             let certificateData = result

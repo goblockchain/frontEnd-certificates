@@ -5,6 +5,7 @@
       <h1>Certificado Inválido ou Não Encontrado</h1>
     </div>
   {{else}}
+    {{#if Template.subscriptionsReady}}
     <div id="certificate" class="image">
       <img id="diploma" src="" width="100%" />
       <span id="name" class="texto nome"></span>
@@ -17,6 +18,7 @@
       <span id="qr-professor" class="qr-code-professor">{{> kjuaImage "0x90e8cbc8e3e4f663a43dbc599acda803bb48b9d5"}}</span>
       
     </div>
+    {{/if}}
 
     <div class="container printPDF no-print">
       <br>
