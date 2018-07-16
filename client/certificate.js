@@ -42,6 +42,8 @@ Template.certificate.onCreated(function () {
 
             certificateContract.institutions.call(result[2], function (error, result) {
                 if (result) {
+                    template = Templates.find({}).fetch()
+                    console.log(template)
                     Session.set("valid", true)
                     document.getElementById("diploma").src = "/template.png";
                     document.getElementById("name").textContent = data[0];

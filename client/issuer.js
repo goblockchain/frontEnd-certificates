@@ -209,8 +209,41 @@ Template.issuer.onDestroyed(function () {
 });
 
 Template.configModal.events({
-    'change .myFileInput': function (event, template) {
-        var files = event.target.files;
-        console.log(files[0])
+    'change #fileinput': function (event, template) {
+        //var files = event.target.files;
+        //console.log(files[0])
+        FS.Utility.eachFile(event, function (file) {
+            Images.insert(file, function (err, fileObj) {
+                if (err) {} else {
+                    var imagesURL = {
+                        "image": "/cfs/files/images/" + fileObj._id
+                    };
+                    var CertificateTemplate = Templates.findOne({
+                        address: Session.get("currentInstitution")
+                    })
+                    if (CertificateTemplate)
+                        Templates.update(CertificateTemplate._id, {
+                            $set: imagesURL
+                        })
+                    else
+                        Templates.insert({
+                            address: Session.get("currentInstitution"),
+                            image: imagesURL
+                        });
+                }
+            });
+
+        });
     }
 });
+
+Template.configModal.helpers({
+    imageUrl() {
+        var certificateTemplate = Templates.findOne({
+            address: Session.get("currentInstitution")
+        })
+        console.log(certificateTemplate)
+        if (certificateTemplate)
+            return certificateTemplate.image;
+    },
+})
