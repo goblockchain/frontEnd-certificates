@@ -219,15 +219,16 @@ Template.configModal.events({
                         "image": "/cfs/files/images/" + fileObj._id
                     };
                     var CertificateTemplate = Templates.findOne({
-                        address: Session.get("currentInstitution")
+                        address: Router.current().params.institution
                     })
+
                     if (CertificateTemplate)
                         Templates.update(CertificateTemplate._id, {
                             $set: imagesURL
                         })
                     else
                         Templates.insert({
-                            address: Session.get("currentInstitution"),
+                            address: Router.current().params.institution,
                             image: imagesURL
                         });
                 }
@@ -240,7 +241,7 @@ Template.configModal.events({
 Template.configModal.helpers({
     imageUrl() {
         var certificateTemplate = Templates.findOne({
-            address: Session.get("currentInstitution")
+            address: Router.current().params.institution
         })
         console.log(certificateTemplate)
         if (certificateTemplate)

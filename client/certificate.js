@@ -38,21 +38,23 @@ Template.certificate.onCreated(function () {
                 return;
             }
 
-            let data = result
+            let certificateData = result
 
-            certificateContract.institutions.call(result[2], function (error, result) {
-                if (result) {
-                    template = Templates.find({}).fetch()
-                    console.log(template)
+            certificateContract.institutions.call(certificateData[2], function (error, institutionData) {
+                if (institutionData) {
+                    template = Templates.findOne({
+                        address: certificateData[2]
+                    })
                     Session.set("valid", true)
-                    document.getElementById("diploma").src = "/certificadoGOtemplate.png";
-                    document.getElementById("name").textContent = data[0];
-                    document.getElementById("course").textContent = data[3];
-                    document.getElementById("institution").textContent = result[1];
-                    document.getElementById("hours").textContent = data[5].c[0];
-                    document.getElementById("name-professor").textContent = "Arthur Miranda";
-                    document.getElementById("address-professor").textContent = "0x90e8cbc8e3e4f663a43dbc599acda803bb48b9d5";
-                    document.getElementById("dates").textContent = data[4];
+                    console.log(certificateData)
+                    document.getElementById("diploma").src = template.image;
+                    document.getElementById("name").textContent = certificateData[0];
+                    document.getElementById("course").textContent = certificateData[3];
+                    //document.getElementById("institution").textContent = institutionData[1];
+                    document.getElementById("hours").textContent = certificateData[5].c[0];
+                    document.getElementById("name-professor").textContent = certificateData[7];
+                    document.getElementById("address-professor").textContent = certificateData[8];
+                    document.getElementById("dates").textContent = certificateData[4];
                 }
             });
 
