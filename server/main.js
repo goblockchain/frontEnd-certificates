@@ -1,9 +1,9 @@
 import {
-  Meteor
+    Meteor
 } from 'meteor/meteor';
 
 Meteor.startup(() => {
-  // code to run on server at startup
+    // code to run on server at startup
 });
 
 //Accounts.validateNewUser(function (user) {
@@ -17,12 +17,17 @@ Meteor.startup(() => {
 //process.env.MAIL_URL = "smtp://oi@echos.cc:password@smtp.gmail.com:587/";
 //
 Meteor.methods({
-  'sendEmail' (to, title, msg) {
-    //    Email.send({
-    //      to: to,
-    //      from: 'oi@echos.cc',
-    //      subject: title,
-    //      html: msg
-    //    });
-  }
+    'sendEmail' (to, title, msg) {
+        //    Email.send({
+        //      to: to,
+        //      from: 'oi@echos.cc',
+        //      subject: title,
+        //      html: msg
+        //    });
+    }
+});
+
+
+Meteor.publish('templates', function () {
+    return Templates.find({});
 });

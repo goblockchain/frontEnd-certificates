@@ -29,6 +29,7 @@ Template.certificate.events({
 
 Template.certificate.onCreated(function () {
     // Web3 stuff
+    this.subscribe('templates');
 
     // get certificate data
     certificateContract.certificates.call(Router.current().params.certificateAddress, function (error, result) {
@@ -46,7 +47,6 @@ Template.certificate.onCreated(function () {
                         address: certificateData[2]
                     })
                     Session.set("valid", true)
-                    console.log(certificateData)
                     document.getElementById("diploma").src = template.image;
                     document.getElementById("name").textContent = certificateData[0];
                     document.getElementById("course").textContent = certificateData[3];

@@ -23,6 +23,8 @@ Template.issuer.helpers({
 
 Template.issuer.onCreated(function () {
 
+    this.subscribe('templates');
+
     Session.set("sending", 0)
 
     //  if (!Meteor.userId())
@@ -243,7 +245,6 @@ Template.configModal.helpers({
         var certificateTemplate = Templates.findOne({
             address: Router.current().params.institution
         })
-        console.log(certificateTemplate)
         if (certificateTemplate)
             return certificateTemplate.image;
     },
