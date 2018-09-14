@@ -18,7 +18,7 @@ Template.institutions.events({
             gas: 900000,
             gasPrice: 3000000000
         };
-        certificateContract.invalidateInstitution.sendTransaction(event.target.id, transactionObject, (error, transaction) => {
+        accessControlContract.invalidateInstitution.sendTransaction(event.target.id, transactionObject, (error, transaction) => {
 
             // send email
             if (!error) {
@@ -46,7 +46,7 @@ Template.institutions.events({
             gasPrice: 3000000000
         };
 
-        certificateContract.addInstitution.sendTransaction(document.getElementById("name").value, document.getElementById("code").value, transactionObject, (error, transaction) => {
+        accessControlContract.addInstitution.sendTransaction(document.getElementById("name").value, document.getElementById("code").value, transactionObject, (error, transaction) => {
 
             // send email
             if (!error) {
@@ -74,7 +74,8 @@ Template.institutions.onRendered(function () {
     }
 
     function updateInstitution(hash) {
-        certificateContract.institutions.call(hash, function (error, result) {
+        accessControlContract.institutions.call(hash, function (error, result) {
+
             if (result[4]) {
                 for (i = 0; i < document.getElementsByClassName(hash).length; i++)
                     document.getElementsByClassName(hash)[i].innerHTML = "sim (" + result[0] + ")<button id='" + hash + "' name='" + hash + "' class='btn btn-danger pull-right btn-xs btn-revoke-institution'>Revogar</button>";
@@ -85,7 +86,7 @@ Template.institutions.onRendered(function () {
     }
 
     // Get current users
-    var users = certificateContract.logNewInstitution({}, {
+    var users = accessControlContract.logNewInstitution({}, {
         fromBlock: 1600000,
         toBlock: 'latest'
     });
@@ -94,14 +95,14 @@ Template.institutions.onRendered(function () {
 
         if (!error) {
             var data = [
-        result.args.hash,
+        result.args._hash,
         result.args.name,
         result.blockNumber,
         result.transactionHash
       ]
 
             appendRow(data);
-            updateInstitution(result.args.hash);
+            updateInstitution(result.args._hash);
 
         } else {
             console.log(error);

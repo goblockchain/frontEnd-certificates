@@ -23,7 +23,7 @@ Template.admin.events({
             gasPrice: 3000000000
         };
 
-        certificateContract.adminRemoveRole.sendTransaction(event.target.id, event.target.name, transactionObject, (error, transaction) => {
+        accessControlContract.adminRemoveRole.sendTransaction(event.target.id, event.target.name, transactionObject, (error, transaction) => {
 
             // send email
             if (!error) {
@@ -51,7 +51,7 @@ Template.admin.events({
             gasPrice: 3000000000
         };
 
-        certificateContract.adminAddRole.sendTransaction(document.getElementById("user-address").value, document.getElementById("access-right").value, transactionObject, (error, transaction) => {
+        accessControlContract.adminAddRole.sendTransaction(document.getElementById("user-address").value, document.getElementById("access-right").value, transactionObject, (error, transaction) => {
 
             // send email
             if (!error) {
@@ -79,7 +79,7 @@ Template.admin.onRendered(function () {
     }
 
     function updateUserRights(user, accessRight) {
-        certificateContract.hasRole.call(user, accessRight, function (error, result) {
+        accessControlContract.hasRole.call(user, accessRight, function (error, result) {
             if (result) {
                 for (i = 0; i < document.getElementsByClassName(user + accessRight).length; i++)
                     document.getElementsByClassName(user + accessRight)[i].innerHTML = "sim <button id='" + user + "' name='" + accessRight + "' class='btn btn-danger pull-right btn-xs btn-revoke-access'>Revogar</button>";
@@ -90,7 +90,7 @@ Template.admin.onRendered(function () {
     }
 
     // Get current users
-    var users = certificateContract.RoleAdded({}, {
+    var users = accessControlContract.RoleAdded({}, {
         fromBlock: 1600000,
         toBlock: 'latest'
     });

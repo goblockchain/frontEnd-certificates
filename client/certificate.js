@@ -12,9 +12,11 @@ Template.certificate.helpers({
         return contractAddress;
     },
     certificateImage() {
-        return Templates.findOne({
+        image = Templates.findOne({
             address: Session.get("institution")
-        }).image;
+        })
+        if (image)
+            return image.image;
     }
 });
 
@@ -46,7 +48,7 @@ Template.certificate.onCreated(function () {
             let certificateData = result
             Session.set("institution", certificateData[2])
 
-            certificateContract.institutions.call(certificateData[2], function (error, institutionData) {
+            accessControlContract.institutions.call(certificateData[2], function (error, institutionData) {
                 if (institutionData) {
                     Session.set("valid", true)
                     //document.getElementById("diploma").src = template.image;

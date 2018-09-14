@@ -131,12 +131,12 @@ Template.issuer.onRendered(function () {
 
     $('#printCertificateForm').show();
 
-    abiDecoder.addABI(contractAbi);
+    abiDecoder.addABI(certificateContractJson.abi);
 
     // table functions
 
     if (Router.current().params.institution) {
-        certificateContract.institutions.call(Router.current().params.institution, function (error, result) {
+        accessControlContract.institutions.call(Router.current().params.institution, function (error, result) {
             if (result) {
                 if (result[4]) { //instituição ativa
                     Session.set("currentInstitution", result[1])
@@ -172,7 +172,7 @@ Template.issuer.onRendered(function () {
         if (!error) {
             let data = result
 
-            certificateContract.institutions.call(result.args._institution, function (error, result) {
+            accessControlContract.institutions.call(result.args._institution, function (error, result) {
                 if (result && (Session.get("currentInstitution") ? (Session.get("currentInstitution") == result[1]) : true)) {
                     certificateContract.certificates.call(data.args.contractAddress,
                         function (error, cert) {
@@ -212,27 +212,11 @@ Template.issuer.onDestroyed(function () {
 
 Template.configModal.events({
     'change #fileinput': function (event, template) {
-        //var files = event.target.files;
-        //console.log(files[0])
+
         FS.Utility.eachFile(event, function (file) {
             Images.insert(file, function (err, fileObj) {
                 if (err) {} else {
-                    var imagesURL = {
-                        "image": "/cfs/files/images/" + fileObj._id
-                    };
-                    var CertificateTemplate = Templates.findOne({
-                        address: Router.current().params.institution
-                    })
-
-                    if (CertificateTemplate)
-                        Templates.update(CertificateTemplate._id, {
-                            $set: imagesURL
-                        })
-                    else
-                        Templates.insert({
-                            address: Router.current().params.institution,
-                            image: imagesURL
-                        });
+                    Meteor.call("uploadPic", fileObj._id, Router.current().params.institution, web3js.eth.coinbase)
                 }
             });
 

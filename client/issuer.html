@@ -176,7 +176,7 @@
         var email = data[0];
 
         Session.set("sending",Session.get("sending")+1);
-        certificateContract.printCertificate.sendTransaction(name, email, transactionData.institution, transactionData.course, transactionData.date, transactionData.hours, transactionData.instructorName, transactionObject, (error, transaction) => {
+        certificateContract.printCertificate.sendTransaction(name, email, transactionData.institution, transactionData.course, transactionData.date, transactionData.hours, transactionData.instructorName, 0x0, transactionObject, (error, transaction) => {
 
           // send email
           if (!error) {

@@ -17,13 +17,29 @@ Meteor.startup(() => {
 //process.env.MAIL_URL = "smtp://oi@echos.cc:password@smtp.gmail.com:587/";
 //
 Meteor.methods({
-    'sendEmail' (to, title, msg) {
-        //    Email.send({
-        //      to: to,
-        //      from: 'oi@echos.cc',
-        //      subject: title,
-        //      html: msg
-        //    });
+    'uploadPic' (file, institution, address) {
+        // async issues in method call, research
+        //accessControlContract.hasRole.call(address, institution, function (error, result) {
+        //if (result) {
+        var imagesURL = {
+            "image": "/cfs/files/images/" + file
+        };
+        var CertificateTemplate = Templates.findOne({
+            address: institution
+        })
+
+        if (CertificateTemplate)
+            Templates.update(CertificateTemplate._id, {
+                $set: imagesURL
+            })
+        else
+            Templates.insert({
+                address: institution,
+                image: imagesURL
+            });
+        //}
+
+        //});
     }
 });
 
