@@ -163,7 +163,7 @@ Template.issuer.onRendered(function () {
 
     // Get printed certificates
     var certificates = certificateContract.logPrintedCertificate({}, {
-        fromBlock: 1600000,
+        fromBlock: FROM_BLOCK,
         toBlock: 'latest'
     });
 
@@ -172,25 +172,21 @@ Template.issuer.onRendered(function () {
         if (!error) {
             let data = result
 
-            accessControlContract.institutions.call(result.args._institution, function (error, result) {
+            accessControlContract.institutions.call(data.args.institution, function (error, result) {
                 if (result && (Session.get("currentInstitution") ? (Session.get("currentInstitution") == result[1]) : true)) {
-                    certificateContract.certificates.call(data.args.contractAddress,
+                    certificateContract.certificates.call(data.args.certificateHash,
                         function (error, cert) {
                             appendRow([
                               data.blockNumber.toString(),
                               result[1],
-                              data.args.contractAddress,
-                              data.args._name,
+                              data.args.certificateHash,
+                              data.args.name,
                               data.args.email,
-                              data.args._course,
-                              data.args._dates,
+                              data.args.course,
+                              data.args.dates,
                               cert[6]
                             ])
-
-
                         })
-
-
                 }
             });
 

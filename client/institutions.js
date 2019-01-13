@@ -87,7 +87,7 @@ Template.institutions.onRendered(function () {
 
     // Get current users
     var users = accessControlContract.logNewInstitution({}, {
-        fromBlock: 1600000,
+        fromBlock: FROM_BLOCK,
         toBlock: 'latest'
     });
 

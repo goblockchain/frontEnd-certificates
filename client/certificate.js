@@ -46,19 +46,19 @@ Template.certificate.onCreated(function () {
             }
 
             let certificateData = result
-            Session.set("institution", certificateData[2])
+            Session.set("institution", certificateData[3])
 
-            accessControlContract.institutions.call(certificateData[2], function (error, institutionData) {
+            accessControlContract.institutions.call(certificateData[3], function (error, institutionData) {
                 if (institutionData) {
                     Session.set("valid", true)
                     //document.getElementById("diploma").src = template.image;
                     document.getElementById("name").textContent = certificateData[0];
-                    document.getElementById("course").textContent = certificateData[3];
+                    document.getElementById("course").textContent = certificateData[4];
                     //document.getElementById("institution").textContent = institutionData[1];
-                    document.getElementById("hours").textContent = certificateData[5].c[0];
-                    document.getElementById("name-professor").textContent = certificateData[7];
+                    document.getElementById("hours").textContent = certificateData[6].c[0];
+                    //document.getElementById("name-professor").textContent = certificateData[7];
                     document.getElementById("address-professor").textContent = certificateData[8];
-                    document.getElementById("dates").textContent = certificateData[4];
+                    document.getElementById("dates").textContent = certificateData[5];
                 }
             });
 

@@ -91,7 +91,7 @@ Template.admin.onRendered(function () {
 
     // Get current users
     var users = accessControlContract.RoleAdded({}, {
-        fromBlock: 1600000,
+        fromBlock: FROM_BLOCK,
         toBlock: 'latest'
     });
 

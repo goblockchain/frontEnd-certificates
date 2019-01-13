@@ -1,0 +1,28 @@
+<template name="myCertificates">
+          
+    <div class="row">
+        {{#each myCertificates}}
+            <div class="col-sm-4">     
+                    <div class="card card-price certificate-card">
+                        <div class="card-img">
+                                <img src="/certificadoGOtemplate.png" class="img-responsive">
+                                <div class="card-caption" style="color: black;">
+                                    <span class="h2">{{name institutionData}} </span>
+                                    <p><small>{{truncate institution}}</small></p>
+                                </div>  
+                        </div>
+                        <div class="card-body">
+                            <div class="price"><small></small></div>
+                            <h3 style="text-align: center;">{{course}}</h3>
+                            <div class="lead">{{dates}}</div>
+                            <ul class="details">
+                                <li><strong>Hash: </strong>{{truncate certificateHash}}</li>
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+        {{/each}}
+    </div>
+</template>
+
+
