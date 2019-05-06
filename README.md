@@ -14,7 +14,7 @@
 
 ## How to run
 
-1. npm install
+1. npm install meteor
 2. meteor
 
 
