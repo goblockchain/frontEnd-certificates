@@ -16,7 +16,7 @@
 
 1. npm install meteor
 2. meteor
-
+3. Go to http://localhost:3000
 
 
 # frontEnd-certificates
